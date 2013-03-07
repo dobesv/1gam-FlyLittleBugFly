@@ -3,7 +3,6 @@ Rain = pc.systems.EntitySystem.extend('Rain',
     {},
     {
         emitters:[],
-
         init: function()
         {
             this._super(['rain', 'droplet']);
@@ -16,7 +15,8 @@ Rain = pc.systems.EntitySystem.extend('Rain',
             if (!c.active) return;
 
             var spatial = entity.getComponent('spatial');
-            if(spatial.pos.y > this.layer.worldSize.y) {
+            if(this.layer.screenX(spatial.pos.x) < 0
+                || this.layer.screenY(spatial.pos.y) > pc.device.canvasHeight) {
                 entity.remove();
             }
         },
@@ -60,13 +60,17 @@ Rain = pc.systems.EntitySystem.extend('Rain',
 
         processAll:function() {
             this._super();
-            var now = (new Date()).getTime();
             this.emitters.forEach(function(emitter) {
+                var now = (new Date()).getTime();
                 var timeSinceLastDrop = now - emitter.lastDrop;
+                if(this.layer.screenX(emitter.x) + this.layer.screenY(0) < 0) {
+                    // Don't drop water below to the left of the screen, we're not going back there
+                    return;
+                }
                 if(timeSinceLastDrop > emitter.interval) {
                     //console.log("Emit drop at", emitter.x, emitter.y);
                     this.spawnDrop(emitter.x, emitter.y, emitter.size);
-                    emitter.lastDrop = now;
+                    emitter.lastDrop = now + pc.device.elapsed;
                     //console.log('Time since last drop', timeSinceLastDrop, emitter.interval)
                 }
             }, this);

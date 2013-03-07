@@ -21,7 +21,9 @@ TheGame = pc.Game.extend('TheGame',
              'bug_float.png',
              'mosquito.png',
              'water_drop.png',
-             'tiles.gif'].forEach(loadImage);
+             'bg_drop.png',
+             'tiles.gif',
+             'bgpanorama.jpg'].forEach(loadImage);
 
             loadTileMap('level1');
 
@@ -71,7 +73,10 @@ TheGame = pc.Game.extend('TheGame',
         onAction:function(actionName) {
             console.log('Game action', actionName);
             if(actionName == 'pause') {
-                this.togglePauseResume();
+                if(this.gameScene.paused)
+                    this.gameScene.resume();
+                else
+                    this.gameScene.pause();
             }
         },
 

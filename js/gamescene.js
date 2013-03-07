@@ -34,8 +34,8 @@ GameScene = pc.Scene.extend('GameScene',
             // game layer
             //-----------------------------------------------------------------------------
             var gameLayer = this.gameLayer = this.get('entity');
-            this.worldHeight = this.gameLayer.worldSize.y;
-            this.worldWidth = this.gameLayer.worldSize.x;
+            var wh = this.worldHeight = this.gameLayer.worldSize.y;
+            var ww = this.worldWidth = this.gameLayer.worldSize.x;
             console.log('World size', this.worldWidth, this.worldHeight);
             this.gameLayer.setZIndex(10);
             // all we need is the render and effects systems
@@ -47,10 +47,20 @@ GameScene = pc.Scene.extend('GameScene',
             this.gameLayer.addSystem(physics);
             this.gameLayer.addSystem(this.rain);
 
-            physics.createStaticBody(0,0,                this.worldWidth, 1, 1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // top
-            physics.createStaticBody(0,this.worldHeight, this.worldWidth, 1, 1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // bottom
-            physics.createStaticBody(0,0, 1,this.worldHeight, 1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // left
-            physics.createStaticBody(this.worldWidth,0, 1,this.worldHeight, 1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // right
+            var bgLayer = new ImageLayer('bgpanorama', 0);
+            bgLayer.fitTo(this.worldWidth, this.worldHeight);
+            bgLayer.setOriginTrack(this.gameLayer);
+            this.addLayer(bgLayer);
+
+            var rainLayer = new RainBgLayer(11);
+            rainLayer.setOriginTrack(this.gameLayer);
+            this.addLayer(rainLayer);
+
+
+            physics.createStaticBody(   0,   0,  ww, 1,  1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // top
+            physics.createStaticBody(   0,wh-1,  ww, 1,  1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // bottom
+            physics.createStaticBody(   0,   0,   1,wh,  1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // left
+            physics.createStaticBody(ww-1,   0,   1,wh,  1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // right
 
             this.gameLayer.addSystem(this.input = new pc.systems.Input());
             var bgLayer = this.bgLayer = this.get('background');
@@ -91,12 +101,12 @@ GameScene = pc.Scene.extend('GameScene',
                 var playerImage = getImage('bug_float');
                 var player = this.player = pc.Entity.create(layer);
                 var playerPhysics = this.playerPhysics = pc.components.Physics.create({
-                    gravity:{x:5,y:3},
+                    gravity:{x:10,y:1},
                     linearDamping:1,
                     angularDamping:3,
                     mass:0.1,
                     faceVel:true,
-                    maxSpeed:{x:50,y:100},
+                    maxSpeed:{x:100,y:100},
                     bounce:3,
                     collisionGroup:1,
                     collisionCategory:COLLIDE_PLAYER,
@@ -142,21 +152,18 @@ GameScene = pc.Scene.extend('GameScene',
 
         process:function ()
         {
-            var playerPos = this.playerSpatial.getCenterPos();
-
-            // clear the background
-            // pc.device.ctx.clearRect(0, 0, pc.device.canvasWidth, pc.device.canvasHeight);
-
             // always call the super
             this._super();
+
+            var playerPos = this.playerSpatial.getCenterPos();
 
             // Follow the player
             var targetOriginX = Math.max(0, Math.min(this.worldWidth - this.viewPort.w, playerPos.x - this.viewPort.w/3));
             var targetOriginY = Math.max(0, Math.min(this.worldHeight - this.viewPort.h, playerPos.y - this.viewPort.h/2));
             var currentOriginX = this.gameLayer.origin.x;
             var currentOriginY = this.gameLayer.origin.y;
-            var originDeltaX = Math.round(Math.max(-8, Math.min(8, (targetOriginX-currentOriginX)*0.5)));
-            var originDeltaY = Math.round(Math.max(-8, Math.min(8, (targetOriginY-currentOriginY)*0.5)));
+            var originDeltaX = Math.round(Math.max(-20, Math.min(20, (targetOriginX-currentOriginX)*0.5)));
+            var originDeltaY = Math.round(Math.max(-20, Math.min(20, (targetOriginY-currentOriginY)*0.5)));
             this.gameLayer.setOrigin(
                 currentOriginX + originDeltaX,
                 currentOriginY + originDeltaY);
@@ -179,16 +186,19 @@ GameScene = pc.Scene.extend('GameScene',
                 var pY = this.gameLayer.screenY(playerPos.y);
                 if(pos.y < pY-50) playerPhysics.applyForce(1,-90);
                 if(pos.y > pY+50) playerPhysics.applyForce(1,90);
-                if(pos.x < pX-50) playerPhysics.applyForce(0.33,180);
-                if(pos.x > pX+50) playerPhysics.applyForce(5,0);
+                if(pos.x < pX-50) playerPhysics.applyForce(1,180);
+                if(pos.x > pX+50) playerPhysics.applyForce(3,0);
             } else {
                 if(isOn('up')) { playerPhysics.applyForce(1,-90); };
                 if(isOn('down')) { playerPhysics.applyForce(1,90); };
-                if(isOn('left')) { playerPhysics.applyForce(0.33,180); };
-                if(isOn('right')) { playerPhysics.applyForce(5,0); };
+                if(isOn('left')) { playerPhysics.applyForce(1,180); };
+                if(isOn('right')) { playerPhysics.applyForce(3,0); };
             }
 
 
+            if(pc.device.canvasHeight > this.worldHeight) {
+                pc.device.ctx.clearRect(0, this.worldHeight, pc.device.canvasWidth, pc.device.canvasHeight-this.worldHeight);
+            }
 
 
         }
