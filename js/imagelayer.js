@@ -33,7 +33,7 @@ ImageLayer = pc.Layer.extend('ImageLayer',
                     var sh = ch; // this.image.height*this.image.scaleX; //(Math.min(ch/this.image.scaleY,this.image.height) - sy)*this.image.scaleY;
                     //this.image.draw(ctx, sx, sy, dx, dy, sw, sh);
                     this.image.draw(ctx,xx+adjustX,yy+adjustY);
-                    console.log('Drawing bg', "xxyy", xx, yy, "sxy", sx, sy, 'dxy', dx, dy, 'iwh', w, h, 'swh', sw, sh, 'cwh', cw, ch, drawnTimes, 'player', pc.device.game.gameScene.playerSpatial.pos.x, pc.device.game.gameScene.playerSpatial.pos.y, 'scale', this.image.scaleX, this.image.scaleY);
+                    //console.log('Drawing bg', "xxyy", xx, yy, "sxy", sx, sy, 'dxy', dx, dy, 'iwh', w, h, 'swh', sw, sh, 'cwh', cw, ch, drawnTimes, 'player', pc.device.game.gameScene.playerSpatial.pos.x, pc.device.game.gameScene.playerSpatial.pos.y, 'scale', this.image.scaleX, this.image.scaleY);
                     drawnTimes++;
                 }
             }
