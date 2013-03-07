@@ -31,13 +31,14 @@ Rain = pc.systems.EntitySystem.extend('Rain',
                 faceVel:false,
                 maxSpeed:{x:100,y:100},
                 bounce:0,
-                mass:100,
+                mass:50,
                 collisionGroup:0,
                 collisionCategory:COLLIDE_DROPS,
                 collisionMask:COLLIDE_PLAYER|COLLIDE_PLAYER,
                 shape:pc.CollisionShape.CIRCLE,
                 linearVelocity:{x:50,y:50}
             }));
+            drop.addComponent(SelfRighting.create());
             drop.addComponent(pc.components.Sprite.create({
                 spriteSheet:new pc.SpriteSheet({
                     image:waterDropImage

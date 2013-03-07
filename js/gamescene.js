@@ -46,6 +46,7 @@ GameScene = pc.Scene.extend('GameScene',
             });
             this.gameLayer.addSystem(physics);
             this.gameLayer.addSystem(this.rain);
+            this.gameLayer.addSystem(new SelfRightingSystem());
 
             var bgLayer = new ImageLayer('bgpanorama', 0);
             bgLayer.fitTo(this.worldWidth, this.worldHeight);
@@ -117,6 +118,7 @@ GameScene = pc.Scene.extend('GameScene',
                 });
                 player.addComponent(this.playerSpatial);
                 player.addComponent(this.playerPhysics);
+                player.addComponent(SelfRighting.create());
                 player.addComponent(pc.components.Sprite.create({
                     spriteSheet:new pc.SpriteSheet({
                         image:playerImage
@@ -195,6 +197,8 @@ GameScene = pc.Scene.extend('GameScene',
                 if(isOn('right')) { playerPhysics.applyForce(3,0); };
             }
 
+            var targetAngle = this.playerPhysics.getVelocityAngle();
+            player.getComponent('selfrighting').targetDir = targetAngle;
 
             if(pc.device.canvasHeight > this.worldHeight) {
                 pc.device.ctx.clearRect(0, this.worldHeight, pc.device.canvasWidth, pc.device.canvasHeight-this.worldHeight);
