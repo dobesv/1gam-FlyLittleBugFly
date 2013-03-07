@@ -92,7 +92,7 @@ GameScene = pc.Scene.extend('GameScene',
 
         createEntity:function (layer, type, x, y, dir, shape, options)
         {
-            console.log('Create entity', type, x, y, dir, shape, options);
+            //console.log('Create entity', type, x, y, dir, shape, options);
             if(type == 'player') {
                 if(this.player) {
                     console.log('Extra player start defined!', x, y);
