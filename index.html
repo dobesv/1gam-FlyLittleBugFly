@@ -28,7 +28,7 @@
                 'menuscene.js',
                 'game.js'];
 
-            var production = (document.location.hostname != "xlocalhost");
+            var production = (document.location.hostname != "localhost");
             var mainScript = production ? pcBaseUrl+"dist/playcraft-"+pcVersion+".min.js" : pcBaseUrl+"lib/playcraft.js";
             var head = document.getElementsByTagName("head")[0];
             var scriptTag = document.createElement('script');
