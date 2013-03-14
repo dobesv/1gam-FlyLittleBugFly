@@ -22,7 +22,7 @@ TheGame = pc.Game.extend('TheGame',
              'mosquito.png',
              'water_drop.png',
              'bg_drop.png',
-             'tiles.gif',
+             'tiles.png',
              'bgpanorama.jpg'].forEach(loadImage);
 
             loadTileMap('level1');
