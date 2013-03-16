@@ -58,6 +58,11 @@ GameScene = pc.Scene.extend('GameScene',
           this.addLayer(rainBgLayer);
         }
 
+        ['scenery_close', 'scenery_far'].forEach(function(layerName, n) {
+          var layer = this.get(layerName);
+          layer.setOriginTrack(this.gameLayer);
+          layer.usePrerendering = false;
+        }, this);
 
         var rainLayer = this.rainLayer = this.get('rain');
         var rainTileMap = rainLayer.tileMap;
