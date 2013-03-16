@@ -6,18 +6,19 @@ RainBgLayer = pc.Layer.extend("RainBgLayer",
     {
       points:[],
 
-      init:function(zIndex, count) {
+      init:function(zIndex, count, size) {
         this._super("rain layer z"+zIndex, zIndex);
         this.image = getImage("bg_drop");
         var canvasWidth = pc.device.canvasWidth;
         var canvasHeight = pc.device.canvasHeight;
         count = count || 25;
+        size = size || 25;
         //console.log("ImageLayer.init", zIndex, count, canvasWidth, canvasHeight);
         for(var x = 1; x < count; x++) {
           this.points.push({
             x:Math.floor((Math.random()*canvasWidth)+1),
             y:Math.floor((Math.random()*500)+1),
-            size:Math.floor((Math.random()*25)+25),
+            size:Math.floor((Math.random()*size)+size),
             speed:(Math.random())+0.25
           });
         }

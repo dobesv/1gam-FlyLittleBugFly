@@ -22,7 +22,7 @@ ImageLayer = pc.Layer.extend('ImageLayer',
             while(y <= -h) y += h;
             var drawnTimes = 0;
             var ctx = pc.device.ctx;
-            ctx.clearRect(0,0,cw,ch);
+            //ctx.clearRect(0,0,cw,ch);
             for(var yy = y; yy < ch; yy += h) {
                 for(var xx = x; xx < cw; xx += w) {
                     var dx = Math.max(0, xx);

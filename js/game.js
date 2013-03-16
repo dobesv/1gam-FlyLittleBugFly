@@ -23,7 +23,10 @@ TheGame = pc.Game.extend('TheGame',
              'water_drop.png',
              'bg_drop.png',
              'tiles.png',
-             'bgpanorama.jpg'].forEach(loadImage);
+             'Tree_layer_2.png',
+             'bglayer1.png',
+             'bglayer2.png',
+             'bglayer3.jpg'].forEach(loadImage);
 
             loadTileMap('level1');
 

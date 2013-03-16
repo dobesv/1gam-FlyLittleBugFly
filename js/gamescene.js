@@ -48,14 +48,16 @@ GameScene = pc.Scene.extend('GameScene',
         this.gameLayer.addSystem(this.rain);
         this.gameLayer.addSystem(new SelfRightingSystem());
 
-        var bgLayer = new ImageLayer('bgpanorama', 0);
-        bgLayer.fitTo(this.worldWidth, this.worldHeight);
-        bgLayer.setOriginTrack(this.gameLayer);
-        this.addLayer(bgLayer);
+        for(var n=1; n <= 3; n++) {
+          var bgLayer = new ImageLayer('bglayer'+n, 3-n);
+          bgLayer.fitTo(this.worldWidth, this.worldHeight);
+          bgLayer.setOriginTrack(this.gameLayer, 1/(n*n));
+          this.addLayer(bgLayer);
+          var rainBgLayer = new RainBgLayer(3-n+0.1, 10, (4-n)*7);
+          rainBgLayer.setOriginTrack(this.gameLayer, 1/(n*n));
+          this.addLayer(rainBgLayer);
+        }
 
-        var rainBgLayer = new RainBgLayer(11);
-        rainBgLayer.setOriginTrack(this.gameLayer);
-        this.addLayer(rainBgLayer);
 
         var rainLayer = this.rainLayer = this.get('rain');
         var rainTileMap = rainLayer.tileMap;
@@ -64,6 +66,7 @@ GameScene = pc.Scene.extend('GameScene',
           rainTileMap.tiles[aty+tilesHigh] = rainTileMap.tiles[aty];
         }
         rainTileMap.tilesHigh = tilesHigh*2;
+        //physics.addTileCollisionMap(rainTileMap, 0, COLLIDE_DROPS, COLLIDE_PLAYER|COLLIDE_PLAYER);
 
         physics.createStaticBody(   0,   0,  ww, 1,  1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // top
         physics.createStaticBody(   0,wh-1,  ww, 1,  1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // bottom
@@ -72,7 +75,7 @@ GameScene = pc.Scene.extend('GameScene',
 
         this.gameLayer.addSystem(this.input = new pc.systems.Input());
         var bgLayer = this.bgLayer = this.get('background');
-        bgLayer.setOriginTrack(gameLayer);
+        bgLayer.setOriginTrack(gameLayer, 0.1, 0.1);
         bgLayer.setZIndex(0);
 
         physics.onCollisionStart = this.onCollisionStart.bind(this);
@@ -177,8 +180,8 @@ GameScene = pc.Scene.extend('GameScene',
 
         // Make the "rain layer" fall down
         var rainLayer = this.rainLayer;
-        var rainOriginY = -((originY + Date.now()) % this.worldHeight);
-        rainLayer.setOrigin(originX, originY + (this.worldHeight - (Date.now() % this.worldHeight)));
+        var rainOriginY = originY + (this.worldHeight - ((Date.now()/2) % this.worldHeight));
+        rainLayer.setOrigin(originX, rainOriginY);
 
         // always call the super
         this._super();
@@ -194,6 +197,9 @@ GameScene = pc.Scene.extend('GameScene',
           // Game over
           pc.device.game.pause();
         }
+
+        // Check if the player is touching a drop
+        // this.rainLayer.tileMap.tileHasProperty()
 
         if(isOn('lmb')) {
           var pos = pc.device.input.mousePos;
