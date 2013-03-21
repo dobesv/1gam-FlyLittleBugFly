@@ -29,7 +29,7 @@ FollowPathSystem = pc.systems.EntitySystem.extend('FollowPathSystem',
           targetPt.x = targetCoord[0] + path.x;
           targetPt.y = targetCoord[1] + path.y;
         } else {
-          if(this.layer.screenX(spatial.pos.x) < -spatial.dim.x) {
+          if(this.layer.screenX(spatial.pos.x) < 0) {
             entity.remove();
             console.log('Flew off the right side ...')
             return;
@@ -39,10 +39,9 @@ FollowPathSystem = pc.systems.EntitySystem.extend('FollowPathSystem',
         }
         var distance = targetPt.distance(spatial.pos);
         var targetDir = spatial.pos.dirTo(targetPt);
-        physics.applyForce(1, targetDir);
+        physics.applyForce(10*physics.mass, targetDir);
         if(distance <= 10) {
           c.pathPosition++;
-          console.log('Next path position ...', c.pathPosition);
         }
         //entity.getComponent('sprite').sprite.scaleX = targetPt.x < spatial.pos.x ? 1 : -1;
         // spatial.setDir(targetPt.x < spatial.pos.x ? 0 : 180);
