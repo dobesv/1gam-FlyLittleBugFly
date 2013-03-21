@@ -51,12 +51,17 @@ GameScene = pc.Scene.extend('GameScene',
         for(var n=1; n <= 3; n++) {
           var bgLayer = new ImageLayer('bglayer'+n, 3-n);
           bgLayer.fitTo(this.worldWidth, this.worldHeight);
-          bgLayer.setOriginTrack(this.gameLayer, 1/(n*n));
+          var ratio = 1 / (n * n);
+          bgLayer.setOriginTrack(this.gameLayer, ratio, ratio);
           this.addLayer(bgLayer);
-          var rainBgLayer = new RainBgLayer(3-n+0.1, 10, (4-n)*7);
-          rainBgLayer.setOriginTrack(this.gameLayer, 1/(n*n));
+          var rainBgLayer = new RainBgLayer(3-n+0.1, n*10, (4-n)*7);
+          rainBgLayer.setOriginTrack(this.gameLayer, ratio, ratio);
           this.addLayer(rainBgLayer);
         }
+        var riverLayer = new ImageLayer('river', 3);
+        riverLayer.moveToBottom(this.worldHeight);
+        riverLayer.setOriginTrack(this.gameLayer);
+        this.addLayer(riverLayer);
 
         ['scenery_close', 'scenery_far'].forEach(function(layerName, n) {
           var layer = this.get(layerName);
