@@ -2,6 +2,7 @@
 var COLLIDE_PLAYER=1;
 var COLLIDE_WALL=2;
 var COLLIDE_DROPS=4;
+var COLLIDE_ENEMY=8;
 
 /**
  * GameScene
@@ -45,7 +46,9 @@ GameScene = pc.Scene.extend('GameScene',
         });
         this.gameLayer.addSystem(physics);
         this.gameLayer.addSystem(this.rain);
+        this.gameLayer.addSystem(new FollowPathSystem());
         this.gameLayer.addSystem(new SelfRightingSystem());
+        this.gameLayer.addSystem(new pc.systems.Activation());
 
         for(var n=1; n <= 3; n++) {
           var bgLayer = new ImageLayer('bglayer'+n, 3-n);
@@ -77,10 +80,10 @@ GameScene = pc.Scene.extend('GameScene',
         rainTileMap.tilesHigh = tilesHigh*2;
         //physics.addTileCollisionMap(rainTileMap, 0, COLLIDE_DROPS, COLLIDE_PLAYER|COLLIDE_PLAYER);
 
-        physics.createStaticBody(   0,   0,  ww, 1,  1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // top
-        physics.createStaticBody(   0,wh-1,  ww, 1,  1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // bottom
-        physics.createStaticBody(   0,   0,   1,wh,  1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // left
-        physics.createStaticBody(ww-1,   0,   1,wh,  1, COLLIDE_WALL, COLLIDE_WALL|COLLIDE_PLAYER); // right
+        physics.createStaticBody(   0,   0,  ww, 1,  0, COLLIDE_WALL, COLLIDE_PLAYER); // top
+        physics.createStaticBody(   0,wh-1,  ww, 1,  0, COLLIDE_WALL, COLLIDE_PLAYER); // bottom
+        physics.createStaticBody(   0,   0,   1,wh,  0, COLLIDE_WALL, COLLIDE_PLAYER); // left
+        physics.createStaticBody(ww-1,   0,   1,wh,  0, COLLIDE_WALL, COLLIDE_PLAYER); // right
 
         this.gameLayer.addSystem(this.input = new pc.systems.Input());
         var bgLayer = this.bgLayer = this.get('background');
@@ -112,7 +115,7 @@ GameScene = pc.Scene.extend('GameScene',
 
       createEntity:function (layer, type, x, y, dir, shape, options)
       {
-        //console.log('Create entity', type, x, y, dir, shape, options);
+        console.log('Create entity', type, x, y, dir, shape, options);
         if(type == 'player') {
           if(this.player) {
             console.log('Extra player start defined!', x, y);
@@ -130,7 +133,7 @@ GameScene = pc.Scene.extend('GameScene',
             bounce:3,
             collisionGroup:1,
             collisionCategory:COLLIDE_PLAYER,
-            collisionMask:COLLIDE_DROPS|COLLIDE_WALL
+            collisionMask:COLLIDE_DROPS|COLLIDE_WALL|COLLIDE_ENEMY
           });
           var playerSpatial = this.playerSpatial = pc.components.Spatial.create({
             x:x,y:y,w:playerImage.width, h:playerImage.height
@@ -154,15 +157,36 @@ GameScene = pc.Scene.extend('GameScene',
             ]
           }));
           player.addTag('player');
-        } else if(type == 'dropEmitter') {
-          var delay = 1000 * parseFloat(options.delay || "0") + x + y;
-          var now = (new Date()).getTime();
-          this.rain.addEmitter({
-            lastDrop:now + delay,
-            interval:1000.0 / parseFloat(options.rate || "1"), // In milliseconds
-            size:parseFloat(options.size || "1"),
-            x:x,
-            y:y});
+        } else if(type == 'bee' || type == 'mosquito') {
+          var beeImage = getImage(type);
+          var bee = pc.Entity.create(layer);
+          bee.addComponent(pc.components.Spatial.create({
+            x:x-beeImage.width/2, y:y-beeImage.height/2,  w:beeImage.width, h:beeImage.height
+          }));
+          bee.addComponent(pc.components.Physics.create({
+            gravity:{x:0,y:0},
+            linearDamping:1,
+            angularDamping:3,
+            mass:0.1,
+            faceVel:true,
+            maxSpeed:{x:100,y:100},
+            bounce:3,
+            collisionGroup:2,
+            collisionCategory:COLLIDE_ENEMY,
+            collisionMask:COLLIDE_PLAYER
+          }));
+          bee.addComponent(pc.components.Sprite.create({
+            spriteSheet:new pc.SpriteSheet({
+              image:beeImage
+            })
+          }));
+          bee.addComponent(FollowPath.create({path:shape}));
+          bee.addComponent(pc.components.Activator.create({
+            tag:'player', range:900
+          }));
+          bee.addComponent(SelfRighting.create());
+          bee.addTag('enemy');
+          bee.addTag('bee');
         }
       },
 

@@ -45,6 +45,144 @@
     <property name="entity" value="player"/>
    </properties>
   </object>
+  <object x="3620" y="89">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object type="mosquito" x="5348" y="474">
+   <polyline points="0,0 -179,139 -407,4 -574,30 -755,-20 -995,20 -1177,-16 -1351,27 -1524,-2"/>
+  </object>
+  <object x="1048" y="63">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="10853" y="332">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="5407" y="45">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -844,-45 -1044,165 -1215,312 -1362,182 -1524,-2"/>
+  </object>
+  <object x="8161" y="228">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -403,-335 -618,467 -814,-272 -1035,447 -1153,-246 -1226,181 -1320,275"/>
+  </object>
+  <object x="8319" y="-31">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -255,114 179,170 -342,259 353,346 -302,485 295,599 -190,646"/>
+  </object>
+  <object x="12480" y="295">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="18428" y="367">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="23617" y="107">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="23800" y="423">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="30056" y="201">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="30507" y="514">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="37386" y="143">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="37763" y="480">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="43367" y="144">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="43486" y="396">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="43504" y="295">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="43518" y="180">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="43495" y="60">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object type="mosquito" x="4006" y="396">
+   <polyline points="0,0 -732,-86 -1338,11 -1818,-86"/>
+  </object>
+  <object type="mosquito" x="8940" y="213">
+   <polyline points="0,0 -179,139 -407,4 -574,30 -755,-20 -995,20 -1177,-16 -1351,27 -1524,-2"/>
+  </object>
+  <object type="mosquito" x="8958" y="485">
+   <polyline points="0,0 -179,139 -407,4 -574,30 -755,-20 -995,20 -1177,-16 -1351,27 -1524,-2"/>
+  </object>
+  <object type="mosquito" x="9298" y="81">
+   <polyline points="0,0 -179,139 -407,4 -574,30 -755,-20 -995,20 -1177,-16 -1351,27 -1524,-2"/>
+  </object>
+  <object type="mosquito" x="34512" y="57">
+   <polyline points="0,0 -179,139 -407,4 -574,30 -755,-20 -995,20 -1177,-16 -1351,27 -1524,-2"/>
+  </object>
+  <object type="mosquito" x="34713" y="296">
+   <polyline points="0,0 -179,139 -407,4 -574,30 -755,-20 -995,20 -1177,-16 -1351,27 -1524,-2"/>
+  </object>
+  <object type="mosquito" x="34798" y="469">
+   <polyline points="0,0 -179,139 -407,4 -574,30 -755,-20 -995,20 -1177,-16 -1351,27 -1524,-2"/>
+  </object>
  </objectgroup>
  <layer name="rain" width="2000" height="24">
   <properties>
