@@ -11,7 +11,7 @@ function playSound(id, volume, loop) {
 };
 function loadImage(name) {
     var path = 'images/'+name;
-    var id = 'images/'+name.replace(/\....$/, "");
+    var id = ('images/'+name.replace(/\....$/, "")).toLowerCase();
     pc.device.loader.add(new pc.Image(id, path));
 };
 function getImage(name) {

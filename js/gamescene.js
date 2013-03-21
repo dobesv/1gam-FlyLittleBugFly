@@ -38,7 +38,6 @@ GameScene = pc.Scene.extend('GameScene',
         var wh = this.worldHeight = this.gameLayer.worldSize.y;
         var ww = this.worldWidth = this.gameLayer.worldSize.x;
         //console.log('World size', this.worldWidth, this.worldHeight);
-        this.gameLayer.setZIndex(10);
         this.gameLayer.addSystem(new pc.systems.Render());
         this.gameLayer.addSystem(new pc.systems.Effects());
         var physics = new pc.systems.Physics({
@@ -64,10 +63,9 @@ GameScene = pc.Scene.extend('GameScene',
         riverLayer.setOriginTrack(this.gameLayer);
         this.addLayer(riverLayer);
 
-        ['scenery_close', 'scenery_far'].forEach(function(layerName, n) {
+        ['scenery_close', 'scenery_far', 'scenery_front'].forEach(function(layerName, n) {
           var layer = this.get(layerName);
           layer.setOriginTrack(this.gameLayer);
-          layer.usePrerendering = false;
         }, this);
 
         var rainLayer = this.rainLayer = this.get('rain');
