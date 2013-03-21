@@ -33,8 +33,7 @@ TheGame = pc.Game.extend('TheGame',
 
             loadTileMap('level1');
 
-            //if (pc.device.soundEnabled)
-            //   pc.device.loader.add(new pc.Sound('fire', 'sounds/fire', ['ogg', 'mp3'], 15));
+            ['rain1', 'music1'].forEach(loadSound);
 
             // fire up the loader
             pc.device.loader.start(this.onLoading.bind(this), this.onLoaded.bind(this));
@@ -71,6 +70,9 @@ TheGame = pc.Game.extend('TheGame',
             // resources are all ready, start the main game scene
             // (or a menu if you have one of those)
             this.activateScene(this.gameScene);
+
+            playSound('rain1', 1, true);
+            playSound('music1', 1, true);
 
             pc.device.input.bindAction(this, 'pause', 'P');
             pc.device.input.bindAction(this, 'pause', 'PAUSE');

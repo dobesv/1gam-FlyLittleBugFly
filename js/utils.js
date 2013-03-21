@@ -1,11 +1,11 @@
 function loadSound(id, maxPlaying) {
     var path = 'sounds/'+id;
     if (pc.device.soundEnabled)
-        pc.device.loader.add(new pc.Sound('sounds/'+id, path, ['ogg','mp3'], maxPlaying || 1));
+        pc.device.loader.add(new pc.Sound(path, path, ['ogg','mp3'], maxPlaying || 1));
 };
 function playSound(id, volume, loop) {
     if (!pc.device.soundEnabled) return;
-    var sound = pc.device.loader.get(id+' sound').resource;
+    var sound = pc.device.loader.get('sounds/'+id).resource;
     sound.setVolume(volume || 1);
     sound.play(loop || false);
 };
