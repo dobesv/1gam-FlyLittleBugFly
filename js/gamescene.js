@@ -54,7 +54,8 @@ GameScene = pc.Scene.extend('GameScene',
           var ratio = 1 / (n * n);
           bgLayer.setOriginTrack(this.gameLayer, ratio, ratio);
           this.addLayer(bgLayer);
-          var rainBgLayer = new RainBgLayer(3-n+0.1, n*10, (4-n)*7);
+          var rainRatio = ratio + 0.1;
+          var rainBgLayer = new RainBgLayer(3-n+0.1, 10/rainRatio, rainRatio*20);
           rainBgLayer.setOriginTrack(this.gameLayer, ratio, ratio);
           this.addLayer(rainBgLayer);
         }

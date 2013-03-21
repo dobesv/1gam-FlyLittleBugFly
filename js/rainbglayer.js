@@ -5,37 +5,37 @@ RainBgLayer = pc.Layer.extend("RainBgLayer",
     {},
     {
       points:[],
+      pointSize:0,
+      worldHeight:0,
 
-      init:function(zIndex, count, size) {
+      init:function(zIndex, count, size, worldHeight) {
         this._super("rain layer z"+zIndex, zIndex);
         this.image = getImage("bg_drop");
         var canvasWidth = pc.device.canvasWidth;
         count = count || 25;
-        size = size || 25;
+        this.pointSize = pc.checked(size, 25);
+        this.worldHeight = pc.checked(worldHeight, pc.device.canvasHeight);
         //console.log("ImageLayer.init", zIndex, count, canvasWidth, canvasHeight);
         for(var x = 1; x < count; x++) {
-          this.points.push({
-            x:Math.floor((Math.random()*canvasWidth)+1),
-            y:Math.floor((Math.random()*500)+1),
-            size:Math.floor((Math.random()*size)+size),
-            speed:(Math.random())+0.25
-          });
+          this.points.push(this.resetPoint({ x:0, y:0, size:0, speed:0 }));
         }
       },
+
+      resetPoint: function(pt, y) {
+        pt.x = this.origin.x + Math.floor((Math.random()*pc.device.canvasWidth*2)+1);
+        pt.y = pc.valid(y) ? y : Math.floor((Math.random()*this.worldHeight*0.75)+1);
+        pt.size = Math.ceil(((Math.random()*0.2)+0.9)*this.pointSize);
+        pt.speed = (Math.random()+0.25)*20;
+        return pt;
+      },
+
       process:function() {
         this._super();
-        var canvasWidth = pc.device.canvasWidth;
-        var canvasHeight = pc.device.canvasHeight;
-        var bottomY = this.screenY(canvasHeight);
         var topY = this.screenY(0);
         this.points.forEach(function(pt) {
-          pt.y += pt.speed*pc.device.elapsed;
-          if(this.screenY(pt.y) > bottomY) {
-            pt.x = -pt.size + Math.round(Math.random()*canvasWidth);
-            pt.y = topY - pt.size - (Math.random()*50);
-          } else if(this.screenX(pt.x) < -pt.size) {
-            pt.y = topY - pt.size - (Math.random()*50);
-            pt.x += canvasWidth;
+          pt.y += pt.size * pt.speed * pc.device.elapsed * 0.001;
+          if(this.screenY(pt.y) > this.worldHeight || this.screenX(pt.x) < -pt.size) {
+            this.resetPoint(pt, topY - pt.size);
           }
         }, this);
       },
