@@ -54,7 +54,7 @@
   <object type="mosquito" x="5348" y="474">
    <polyline points="0,0 -179,139 -407,4 -574,30 -755,-20 -995,20 -1177,-16 -1351,27 -1524,-2"/>
   </object>
-  <object x="1048" y="63">
+  <object x="1795" y="134">
    <properties>
     <property name="entity" value="bee"/>
    </properties>
@@ -182,6 +182,18 @@
   </object>
   <object type="mosquito" x="34798" y="469">
    <polyline points="0,0 -179,139 -407,4 -574,30 -755,-20 -995,20 -1177,-16 -1351,27 -1524,-2"/>
+  </object>
+  <object x="2725" y="325">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object x="2823" y="126">
+   <properties>
+    <property name="entity" value="bee"/>
+   </properties>
+   <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
   </object>
  </objectgroup>
  <layer name="rain" width="2000" height="24">
