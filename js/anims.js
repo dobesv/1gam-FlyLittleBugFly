@@ -4,8 +4,8 @@ animConfigs = {
     frameWidth: 52,
     frameHeight: 62,
     anims:{
-      fly:{frameCount:2, time:200},
-      float:{framCount:1, time:2000}
+      fly:{frameCount:2, time:200, frameX: 0},
+      float:{framCount:1, time:2000, frameX: 2}
     }
   },
   bee:{
@@ -13,7 +13,7 @@ animConfigs = {
     frameWidth:136,
     frameHeight:148,
     anims:{
-      fly:{frameCount:2, time:200}
+      fly:{frameCount:14, time:583}
     }
   },
   mosquito:{
