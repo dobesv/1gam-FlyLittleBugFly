@@ -49,6 +49,7 @@ GameScene = pc.Scene.extend('GameScene',
         this.gameLayer.addSystem(new FollowPathSystem());
         this.gameLayer.addSystem(new SelfRightingSystem());
         this.gameLayer.addSystem(new pc.systems.Activation());
+        this.gameLayer.addSystem(new PlayerControlSystem());
 
         for(var n=1; n <= 3; n++) {
           var bgLayer = new ImageLayer('bglayer'+n, 3-n);
@@ -125,7 +126,7 @@ GameScene = pc.Scene.extend('GameScene',
           var playerSpriteSheet = getAnim('bug');
           var player = this.player = pc.Entity.create(layer);
           var playerPhysics = this.playerPhysics = pc.components.Physics.create({
-            gravity:{x:10,y:1},
+            gravity:{x:0,y:1},
             linearDamping:1,
             angularDamping:3,
             mass:0.1,
@@ -154,6 +155,7 @@ GameScene = pc.Scene.extend('GameScene',
               ['rmb', ['MOUSE_BUTTON_RIGHT_DOWN'], false]
             ]
           }));
+          player.addComponent(PlayerComponent.create());
           player.addTag('player');
         } else if(type == 'bee' || type == 'mosquito') {
           var beeSheet = getAnim(type);
@@ -211,50 +213,18 @@ GameScene = pc.Scene.extend('GameScene',
         var rainOriginY = originY + (this.worldHeight - ((Date.now()/2) % this.worldHeight));
         rainLayer.setOrigin(originX, rainOriginY);
 
+        if(pc.device.canvasHeight > this.worldHeight) {
+          pc.device.ctx.clearRect(0, this.worldHeight, pc.device.canvasWidth, pc.device.canvasHeight-this.worldHeight);
+        }
+
         // always call the super
         this._super();
-
-        var player = this.player;
-        var input = this.input;
-        var playerPhysics = this.playerPhysics;
-        var isOn = function(s) {
-          return input.isInputState(player, s);
-        };
 
         if(playerPos.x > this.worldWidth - 120) {
           // Game over
           pc.device.game.pause();
         }
 
-        // Check if the player is touching a drop
-        // this.rainLayer.tileMap.tileHasProperty()
 
-        var flying = false;
-        if(isOn('lmb')) {
-          var pos = pc.device.input.mousePos;
-          var pX = this.gameLayer.screenX(playerPos.x);
-          var pY = this.gameLayer.screenY(playerPos.y);
-
-          if(pos.y < pY-50) { flying = true; playerPhysics.applyForce(1,-90); }
-          if(pos.y > pY+50) { flying = true; playerPhysics.applyForce(1,90); }
-          if(pos.x < pX-50) { flying = true; playerPhysics.applyForce(1,180); }
-          if(pos.x > pX+50) { flying = true; playerPhysics.applyForce(3,0); }
-        } else {
-
-          if(isOn('up')) { flying = true; playerPhysics.applyForce(1,-90); };
-          if(isOn('down')) { flying = true; playerPhysics.applyForce(1,90); };
-          if(isOn('left')) { flying = true; playerPhysics.applyForce(1,180); };
-          if(isOn('right')) { flying = true; playerPhysics.applyForce(3,0); };
-
-        }
-
-        var targetAngle = this.playerPhysics.getVelocityAngle();
-        player.getComponent('selfrighting').targetDir = targetAngle;
-
-        if(pc.device.canvasHeight > this.worldHeight) {
-          pc.device.ctx.clearRect(0, this.worldHeight, pc.device.canvasWidth, pc.device.canvasHeight-this.worldHeight);
-        }
-
-        player.getComponent('sprite').sprite.setAnimation(flying?'fly':'float');
       }
     });
