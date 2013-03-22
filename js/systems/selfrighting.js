@@ -18,7 +18,7 @@ SelfRightingSystem = pc.systems.EntitySystem.extend('SelfRightingSystem', {},
                     var delta = c.targetDir - dir;
                     while(delta > 180) delta -= 360;
                     while(delta < -180) delta += 360;
-                    physics.applyTurn(Math.max(-20, Math.min(20, delta/5)));
+                    physics.applyTurn(Math.max(-20, Math.min(20, delta/2)));
                 }
             }
         }
