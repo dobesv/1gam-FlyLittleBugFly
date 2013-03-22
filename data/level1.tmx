@@ -40,11 +40,7 @@
   <properties>
    <property name="zindex" value="10"/>
   </properties>
-  <object x="143" y="171" width="20" height="21">
-   <properties>
-    <property name="entity" value="player"/>
-   </properties>
-  </object>
+  <object name="start" type="player" x="143" y="171" width="39" height="34"/>
   <object x="3620" y="89">
    <properties>
     <property name="entity" value="bee"/>
@@ -194,6 +190,9 @@
     <property name="entity" value="bee"/>
    </properties>
    <polyline points="0,0 -179,139 -407,4 -580,183 -755,-20 -1044,165 -1177,-16 -1362,182 -1524,-2"/>
+  </object>
+  <object type="mosquito" x="1244" y="556">
+   <polyline points="0,0 -207,-97 -328,14 -424,-98 -559,-48 -601,-225 -467,-413 -71,-467 -339,-206 -674,-256 -734,-42 -506,46 -316,-122 -807,-175"/>
   </object>
  </objectgroup>
  <layer name="rain" width="2000" height="24">

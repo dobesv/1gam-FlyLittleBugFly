@@ -22,10 +22,10 @@ animConfigs = {
   },
   mosquito:{
     image:'mosquito.png',
-    frameWidth: 148,
-    frameHeight: 109,
+    frameWidth: 215,
+    frameHeight: 215,
     anims: {
-      fly:{frameCount:1, fps:1}
+      fly:{frameCount:14, fps:24, framesWide:4, framesHigh:4}
     }
   }
 };
