@@ -3,6 +3,7 @@ var COLLIDE_PLAYER=1;
 var COLLIDE_WALL=2;
 var COLLIDE_DROPS=4;
 var COLLIDE_ENEMY=8;
+var COLLIDE_PICKUP=16;
 
 /**
  * GameScene
@@ -16,8 +17,7 @@ GameScene = pc.Scene.extend('GameScene',
       rainLayer:null,
 
       player:null,
-      playerPhysics:null,
-      playerSpatial:null,
+      playerControlSystem:null,
 
       input:null,
 
@@ -49,7 +49,9 @@ GameScene = pc.Scene.extend('GameScene',
         this.gameLayer.addSystem(new FollowPathSystem());
         this.gameLayer.addSystem(new SelfRightingSystem());
         this.gameLayer.addSystem(new pc.systems.Activation());
-        this.gameLayer.addSystem(new PlayerControlSystem());
+        var playerControlSystem = this.playerControlSystem = new PlayerControlSystem();
+        this.gameLayer.addSystem(playerControlSystem);
+        this.gameLayer.addSystem(new PickupSystem());
 
         for(var n=1; n <= 3; n++) {
           var bgLayer = new ImageLayer('bglayer'+n, 3-n);
@@ -86,7 +88,9 @@ GameScene = pc.Scene.extend('GameScene',
         physics.createStaticBody(   0,   0,   1,wh,  0, COLLIDE_WALL, COLLIDE_PLAYER); // left
         physics.createStaticBody(ww-1,   0,   1,wh,  0, COLLIDE_WALL, COLLIDE_PLAYER); // right
 
-        this.gameLayer.addSystem(this.input = new pc.systems.Input());
+        var input = this.input = playerControlSystem.input = new pc.systems.Input();
+        input.onAction = this.onAction.bind(this);
+        this.gameLayer.addSystem(input);
         var bgLayer = this.bgLayer = this.get('background');
         bgLayer.setOriginTrack(gameLayer, 0.1, 0.1);
         bgLayer.setZIndex(0);
@@ -107,84 +111,74 @@ GameScene = pc.Scene.extend('GameScene',
        */
       onCollisionStart:function (aType, bType, entityA, entityB, fixtureAType, fixtureBType, contact)
       {
-        if (aType == pc.BodyType.ENTITY && bType == pc.BodyType.ENTITY)
-        {
-          if(entityA.hasTag('drop')) {
-
+        if (aType == pc.BodyType.ENTITY && bType == pc.BodyType.ENTITY) {
+          if(entityA.hasTag('player')) {
+            this.playerControlSystem.onTouchPlayer(entityA, entityB);
+          } else if(entityB.hasTag('player')) {
+            this.playerControlSystem.onTouchPlayer(entityB, entityA);
           }
+        }
+      },
+
+      onAction:function(actionName) {
+        console.log('scene onAction: '+actionName);
+        var ent = uiTarget.getEntity();
+        if(ent.hasTag('player')) {
+          this.playerControlSystem.onAction(this.player, actionName, event, pos, uiTarget);
         }
       },
 
       createEntity:function (layer, type, x, y, dir, shape, options)
       {
         //console.log('Create entity', type, x, y, dir, shape, options);
-        if(type == 'player') {
-          if(this.player) {
-            console.log('Extra player start defined!', x, y);
-            return;
+        var ent = pc.Entity.create(layer);
+        var sprite = null;
+        var ss = getAnim(type);
+        if(ss) {
+          ent.addComponent(sprite = pc.components.Sprite.create({spriteSheet:ss}));
+          ent.addComponent(pc.components.Spatial.create({
+            x:x-ss.frameWidth/2, y:y-ss.frameHeight/2,  w:ss.frameWidth, h:ss.frameHeight
+          }));
+          if(type == 'player') {
+            if(this.player) {
+              ent.remove();
+              console.log('Extra player start defined!', x, y);
+              return;
+            }
+            this.player = ent;
+            ent.addComponent(PlayerComponent.create());
+          } else if(type == 'bee' || type == 'mosquito') {
+            ent.addComponent(pc.components.Physics.create({
+              linearDamping:1,
+              mass:10,
+              collisionGroup:COLLIDE_ENEMY,
+              collisionCategory:COLLIDE_ENEMY,
+              collisionMask:COLLIDE_PLAYER
+            }));
+            sprite.sprite.setAnimation('fly');
+            ent.addComponent(FollowPath.create({path:shape}));
+            ent.addComponent(pc.components.Activator.create({
+              tag:'player', range:900
+            }));
+            ent.addComponent(SelfRighting.create());
+            ent.addTag('predator');
+          } else if(type == 'orb1') {
+            ent.addComponent(pc.components.Physics.create({
+              gravity:{x:0,y:0},
+              sensorOnly:true,
+              collisionGroup:COLLIDE_PICKUP,
+              collisionCategory:COLLIDE_PICKUP,
+              collisionMask:COLLIDE_PLAYER
+            }));
+            sprite.sprite.setAnimation('float');
+            ent.addComponent(pc.components.Activator.create({
+              tag:'player', range:900
+            }));
+            ent.addTag('pickup');
           }
-          var playerSpriteSheet = getAnim('bug');
-          var player = this.player = pc.Entity.create(layer);
-          var playerPhysics = this.playerPhysics = pc.components.Physics.create({
-            gravity:{x:0,y:1},
-            linearDamping:1,
-            angularDamping:3,
-            mass:0.1,
-            faceVel:true,
-            maxSpeed:{x:100,y:100},
-            bounce:3,
-            collisionGroup:1,
-            collisionCategory:COLLIDE_PLAYER,
-            collisionMask:COLLIDE_DROPS|COLLIDE_WALL|COLLIDE_ENEMY
-          });
-          var playerSpatial = this.playerSpatial = pc.components.Spatial.create({
-            x:x,y:y,w:playerSpriteSheet.frameWidth, h:playerSpriteSheet.frameHeight
-          });
-          player.addComponent(this.playerSpatial);
-          player.addComponent(this.playerPhysics);
-          player.addComponent(SelfRighting.create());
-          player.addComponent(pc.components.Sprite.create({spriteSheet:playerSpriteSheet}));
-          player.getComponent('sprite').sprite.setAnimation('fly');
-          player.addComponent(pc.components.Input.create({
-            states: [
-              ['left', ['A', 'LEFT']],
-              ['right', ['D', 'RIGHT']],
-              ['up', ['W', 'UP']],
-              ['down', ['S', 'DOWN']],
-              ['lmb', ['TOUCH', 'MOUSE_BUTTON_LEFT_DOWN', 'MOUSE_BUTTON_RIGHT_DOWN'], false],
-              ['rmb', ['MOUSE_BUTTON_RIGHT_DOWN'], false]
-            ]
-          }));
-          player.addComponent(PlayerComponent.create());
-          player.addTag('player');
-        } else if(type == 'bee' || type == 'mosquito') {
-          var beeSheet = getAnim(type);
-          var bee = pc.Entity.create(layer);
-          bee.addComponent(pc.components.Spatial.create({
-            x:x-beeSheet.frameWidth/2, y:y-beeSheet.frameHeight/2,  w:beeSheet.frameWidth, h:beeSheet.frameHeight
-          }));
-          bee.addComponent(pc.components.Physics.create({
-            gravity:{x:0,y:0},
-            linearDamping:1,
-            angularDamping:3,
-            mass:10,
-            faceVel:true,
-            maxSpeed:{x:100,y:100},
-            bounce:3,
-            collisionGroup:2,
-            collisionCategory:COLLIDE_ENEMY,
-            collisionMask:COLLIDE_PLAYER
-          }));
-          bee.addComponent(pc.components.Sprite.create({spriteSheet:beeSheet}));
-          bee.getComponent('sprite').sprite.setAnimation('fly');
-          bee.addComponent(FollowPath.create({path:shape}));
-          bee.addComponent(pc.components.Activator.create({
-            tag:'player', range:900
-          }));
-          bee.addComponent(SelfRighting.create());
-          bee.addTag('enemy');
-          bee.addTag('bee');
         }
+
+        ent.addTag(type);
       },
 
       // handle menu actions
@@ -195,7 +189,7 @@ GameScene = pc.Scene.extend('GameScene',
       process:function ()
       {
 
-        var playerPos = this.playerSpatial.getCenterPos();
+        var playerPos = this.player.getComponent('spatial').getCenterPos();
 
         // Follow the player
         var targetOriginX = Math.max(0, Math.min(this.worldWidth - this.viewPort.w, playerPos.x - this.viewPort.w/3));
@@ -220,7 +214,7 @@ GameScene = pc.Scene.extend('GameScene',
         // always call the super
         this._super();
 
-        if(playerPos.x > this.worldWidth - 120) {
+        if(playerPos.x > this.worldWidth - 120 || playerPos.y > this.worldHeight) {
           // Game over
           pc.device.game.pause();
         }

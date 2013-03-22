@@ -2,23 +2,82 @@
 PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
     {},
     {
-      emitters:[],
+      input:null,
+      godmode:false,
+
       init: function()
       {
         this._super(['player']);
       },
 
+      onEntityAdded:function(player) {
+        var input = pc.components.Input.create({
+          states: [
+            ['left', ['A', 'LEFT']],
+            ['right', ['D', 'RIGHT']],
+            ['up', ['W', 'UP']],
+            ['down', ['S', 'DOWN']],
+            ['lmb', ['TOUCH', 'MOUSE_BUTTON_LEFT_DOWN', 'MOUSE_BUTTON_RIGHT_DOWN'], false],
+            ['rmb', ['MOUSE_BUTTON_RIGHT_DOWN'], false]
+          ]
+        });
+
+        player.addComponent(input);
+        player.addComponent(pc.components.Physics.create({
+          //gravity:{x:0,y:1},
+          linearDamping:1,
+          mass:0.1,
+          faceVel:true,
+          maxSpeed:{x:100,y:100},
+          bounce:3,
+          collisionGroup:COLLIDE_PLAYER,
+          collisionCategory:COLLIDE_PLAYER,
+          collisionMask:COLLIDE_DROPS|COLLIDE_WALL|COLLIDE_ENEMY|COLLIDE_PICKUP
+        }));
+        player.addComponent(SelfRighting.create());
+
+        pc.device.input.bindAction(this, 'godmode', 'G');
+      },
+
+      onAction: function(actionName) {
+        console.log("Action: "+actionName);
+        if(actionName == 'godmode') {
+          this.godmode = !this.godmode;
+          console.log('God mode: '+(this.godmode?"on":"off"));
+        }
+      },
+
+      onTouchPlayer: function(player, what) {
+        if(what.hasTag('predator')) {
+          // Touched a predator
+          if(!this.godmode) {
+            player.getComponent('player').die();
+          }
+        } else if(what.hasTag('pickup')) {
+          // Touched a pickup
+          what.remove(); // TODO: Play a pickup animation
+        }
+      },
 
       process: function(player)
       {
         var c = player.getComponent('player');
         if (!c.active) return;
+
         var playerSpatial = player.getComponent('spatial');
         var playerPhysics = player.getComponent('physics');
-        var input = this.systemManager.getByComponentType('input').first.object();
-        var isOn = function(s) {
-          return input.isInputState(player, s);
-        };
+        var playerPos = playerSpatial.getPos();
+        if(c.dead) {
+          playerPhysics.setCollisionMask(0);
+          playerPhysics.setGravity(0, playerPhysics.mass * 200);
+          playerPhysics.applyTurn(360);
+          player.getComponent('sprite').sprite.setAnimation('float');
+          return;
+        }
+
+        var isOn = function isOn(s) {
+          return this.input.isInputState(player, s);
+        }.bind(this);
 
         // Check if the player is touching a drop
         // this.rainLayer.tileMap.tileHasProperty()
@@ -27,7 +86,6 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         var flyY = 0;
         if(isOn('lmb')) {
           var pos = pc.device.input.mousePos;
-          var playerPos = playerSpatial.getPos();
           var pX = this.layer.screenX(playerPos.x);
           var pY = this.layer.screenY(playerPos.y);
 
@@ -47,9 +105,27 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         if(pushX) { playerPhysics.applyForce(pushX,0); }
         if(pushY) { playerPhysics.applyForce(pushY,90); }
 
-        var targetAngle = Math.max(-15, Math.min(90, playerPhysics.getVelocityAngle()-90));
-        player.getComponent('selfrighting').targetDir = targetAngle;
+        var targetAngle = Math.max(-15, Math.min(45, playerPhysics.getVelocityAngle()-90));
+        player.getComponent('selfrighting').targetDir = flying ? targetAngle : 0;
         player.getComponent('sprite').sprite.setAnimation(flying?'fly':'float');
+
+        var text = player.getComponent('text');
+        if(this.godmode) {
+          if(pc.valid(text)) {
+            text.text = "GOD";
+            text.active = true;
+          } else {
+            text = pc.components.Text.create({
+              color:'#000000',
+              offset:{x:-20,y:-50},
+              fontHeight:10,
+              font:'sans-serif'
+            });
+            player.addComponent(text);
+          }
+        } else {
+          if(pc.valid(text)) text.active = false;
+        }
       }
 
     });

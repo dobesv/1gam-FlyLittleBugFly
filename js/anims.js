@@ -1,5 +1,5 @@
 animConfigs = {
-  bug:{
+  player:{
     image:'bug_anim.png',
     frameWidth: 52, // Width of each frame, assuming an even grid of frames
     frameHeight: 62, // Height of each frame, assuming an even grid of frames
@@ -26,6 +26,14 @@ animConfigs = {
     frameHeight: 215,
     anims: {
       fly:{frameCount:14, fps:24, framesWide:4, framesHigh:4}
+    }
+  },
+  orb1:{
+    image:"orb1.png",
+    frameWidth: 42,
+    frameHeight: 42,
+    anims: {
+      float:{frameCount:24, fps:24, framesWide: 6, framesHigh: 5}
     }
   }
 };

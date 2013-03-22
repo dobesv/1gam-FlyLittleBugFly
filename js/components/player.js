@@ -2,10 +2,14 @@ PlayerComponent = pc.components.Component.extend('PlayerComponent',
     {
     },
     {
-      init: function()
-      {
-        this._super('player');
-      }
+      dead:false,
 
+      init: function() {
+        this._super('player');
+      },
+
+      die:function() {
+        this.dead = true;
+      }
     });
 
