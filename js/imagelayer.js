@@ -65,7 +65,6 @@ ImageLayer = pc.Layer.extend('ImageLayer',
       moveToBottom:function(height) {
         this.repeatY = false;
         this.y = height - (this.image.height / this.image.scaleY);
-        console.log('move to bottom', this.y, this.image.height, this.image.scaleY, height);
       }
     }
 );

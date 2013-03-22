@@ -91,6 +91,7 @@ GameScene = pc.Scene.extend('GameScene',
         bgLayer.setZIndex(0);
 
         physics.onCollisionStart = this.onCollisionStart.bind(this);
+
       },
       /**
        * Called when an entity first collides with a tile or another entity. Use the fixture types to differentiate
@@ -121,7 +122,7 @@ GameScene = pc.Scene.extend('GameScene',
             console.log('Extra player start defined!', x, y);
             return;
           }
-          var playerImage = getImage('bug_float');
+          var playerSpriteSheet = getAnim('bug');
           var player = this.player = pc.Entity.create(layer);
           var playerPhysics = this.playerPhysics = pc.components.Physics.create({
             gravity:{x:10,y:1},
@@ -136,16 +137,13 @@ GameScene = pc.Scene.extend('GameScene',
             collisionMask:COLLIDE_DROPS|COLLIDE_WALL|COLLIDE_ENEMY
           });
           var playerSpatial = this.playerSpatial = pc.components.Spatial.create({
-            x:x,y:y,w:playerImage.width, h:playerImage.height
+            x:x,y:y,w:playerSpriteSheet.frameWidth, h:playerSpriteSheet.frameHeight
           });
           player.addComponent(this.playerSpatial);
           player.addComponent(this.playerPhysics);
           player.addComponent(SelfRighting.create());
-          player.addComponent(pc.components.Sprite.create({
-            spriteSheet:new pc.SpriteSheet({
-              image:playerImage
-            })
-          }));
+          player.addComponent(pc.components.Sprite.create({spriteSheet:playerSpriteSheet}));
+          player.getComponent('sprite').sprite.setAnimation('fly');
           player.addComponent(pc.components.Input.create({
             states: [
               ['left', ['A', 'LEFT']],
@@ -158,10 +156,10 @@ GameScene = pc.Scene.extend('GameScene',
           }));
           player.addTag('player');
         } else if(type == 'bee' || type == 'mosquito') {
-          var beeImage = getImage(type);
+          var beeSheet = getAnim(type);
           var bee = pc.Entity.create(layer);
           bee.addComponent(pc.components.Spatial.create({
-            x:x-beeImage.width/2, y:y-beeImage.height/2,  w:beeImage.width, h:beeImage.height
+            x:x-beeSheet.frameWidth/2, y:y-beeSheet.frameHeight/2,  w:beeSheet.frameWidth, h:beeSheet.frameHeight
           }));
           bee.addComponent(pc.components.Physics.create({
             gravity:{x:0,y:0},
@@ -175,11 +173,8 @@ GameScene = pc.Scene.extend('GameScene',
             collisionCategory:COLLIDE_ENEMY,
             collisionMask:COLLIDE_PLAYER
           }));
-          bee.addComponent(pc.components.Sprite.create({
-            spriteSheet:new pc.SpriteSheet({
-              image:beeImage
-            })
-          }));
+          bee.addComponent(pc.components.Sprite.create({spriteSheet:beeSheet}));
+          bee.getComponent('sprite').sprite.setAnimation('fly');
           bee.addComponent(FollowPath.create({path:shape}));
           bee.addComponent(pc.components.Activator.create({
             tag:'player', range:900
