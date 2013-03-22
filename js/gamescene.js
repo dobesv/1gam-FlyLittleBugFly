@@ -229,19 +229,23 @@ GameScene = pc.Scene.extend('GameScene',
         // Check if the player is touching a drop
         // this.rainLayer.tileMap.tileHasProperty()
 
+        var flying = false;
         if(isOn('lmb')) {
           var pos = pc.device.input.mousePos;
           var pX = this.gameLayer.screenX(playerPos.x);
           var pY = this.gameLayer.screenY(playerPos.y);
-          if(pos.y < pY-50) playerPhysics.applyForce(1,-90);
-          if(pos.y > pY+50) playerPhysics.applyForce(1,90);
-          if(pos.x < pX-50) playerPhysics.applyForce(1,180);
-          if(pos.x > pX+50) playerPhysics.applyForce(3,0);
+
+          if(pos.y < pY-50) { flying = true; playerPhysics.applyForce(1,-90); }
+          if(pos.y > pY+50) { flying = true; playerPhysics.applyForce(1,90); }
+          if(pos.x < pX-50) { flying = true; playerPhysics.applyForce(1,180); }
+          if(pos.x > pX+50) { flying = true; playerPhysics.applyForce(3,0); }
         } else {
-          if(isOn('up')) { playerPhysics.applyForce(1,-90); };
-          if(isOn('down')) { playerPhysics.applyForce(1,90); };
-          if(isOn('left')) { playerPhysics.applyForce(1,180); };
-          if(isOn('right')) { playerPhysics.applyForce(3,0); };
+
+          if(isOn('up')) { flying = true; playerPhysics.applyForce(1,-90); };
+          if(isOn('down')) { flying = true; playerPhysics.applyForce(1,90); };
+          if(isOn('left')) { flying = true; playerPhysics.applyForce(1,180); };
+          if(isOn('right')) { flying = true; playerPhysics.applyForce(3,0); };
+
         }
 
         var targetAngle = this.playerPhysics.getVelocityAngle();
@@ -251,5 +255,6 @@ GameScene = pc.Scene.extend('GameScene',
           pc.device.ctx.clearRect(0, this.worldHeight, pc.device.canvasWidth, pc.device.canvasHeight-this.worldHeight);
         }
 
+        player.getComponent('sprite').sprite.setAnimation(flying?'fly':'float');
       }
     });

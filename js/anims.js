@@ -8,8 +8,8 @@ animConfigs = {
       // frameCount is the number of frames of animation
       // frameX/frameY specify the starting frame location on the grid (default 0 if not specified)
       // fps: frames per second
-      fly:{frameCount:2, fps:10, frameX: 0},
-      float:{framCount:1, fps:1, frameX: 2}
+      fly:{frameCount:2, fps:24, frameX: 1},
+      float:{framCount:1, fps:1, frameX: 0}
     }
   },
   bee:{
