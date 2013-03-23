@@ -71,9 +71,11 @@ animConfigs = {
     image:"orb1.png",
     frameWidth: 130,
     frameHeight: 131,
+    framesWide: 15,
+    framesHigh: 3,
     anims: {
-      float:{frameCount:30, fps:24, framesWide: 15, framesHigh: 2},
-      burst:{frameCount:12, fps:24, frameY: 2, framesWide: 12, stopAtEnd:true, loops:1}
+      float:{frameCount:28, fps:24},
+      burst:{frameCount:15, fps:30, frameY: 1, frameX: 13, stopAtEnd:true, loops:1}
     },
     shapes:[
       {shape:pc.CollisionShape.CIRCLE, offset:{w:-100,h:-100}}
