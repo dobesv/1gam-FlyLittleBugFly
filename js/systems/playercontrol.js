@@ -31,6 +31,7 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
           faceVel:true,
           maxSpeed:{x:100,y:100},
           bounce:3,
+          shapes:getAnimShapes('player'),
           collisionGroup:COLLIDE_PLAYER,
           collisionCategory:COLLIDE_PLAYER,
           collisionMask:COLLIDE_DROPS|COLLIDE_WALL|COLLIDE_ENEMY|COLLIDE_PICKUP

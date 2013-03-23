@@ -22,6 +22,8 @@ GameScene = pc.Scene.extend('GameScene',
       input:null,
 
       rain:null,
+      physics:null,
+
 
       init:function () {
         this._super();
@@ -41,7 +43,7 @@ GameScene = pc.Scene.extend('GameScene',
         //console.log('World size', this.worldWidth, this.worldHeight);
         this.gameLayer.addSystem(new pc.systems.Render());
         this.gameLayer.addSystem(new pc.systems.Effects());
-        var physics = new pc.systems.Physics({
+        var physics = this.physics = new pc.systems.Physics({
           gravity:{x:0,y:10}
         });
         this.gameLayer.addSystem(physics);
@@ -151,6 +153,7 @@ GameScene = pc.Scene.extend('GameScene',
             ent.addComponent(pc.components.Physics.create({
               linearDamping:1,
               mass:10,
+              shapes:getAnimShapes(type),
               collisionGroup:COLLIDE_ENEMY,
               collisionCategory:COLLIDE_ENEMY,
               collisionMask:COLLIDE_PLAYER
@@ -166,6 +169,7 @@ GameScene = pc.Scene.extend('GameScene',
             ent.addComponent(pc.components.Physics.create({
               gravity:{x:0,y:0},
               sensorOnly:true,
+              shapes:getAnimShapes(type),
               collisionGroup:COLLIDE_PICKUP,
               collisionCategory:COLLIDE_PICKUP,
               collisionMask:COLLIDE_PLAYER
@@ -219,6 +223,6 @@ GameScene = pc.Scene.extend('GameScene',
           pc.device.game.pause();
         }
 
-
+        this.physics.setDebug(window.location.hash.indexOf('debug') > 0);
       }
     });

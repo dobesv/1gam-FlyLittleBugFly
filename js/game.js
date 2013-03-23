@@ -98,7 +98,39 @@ TheGame = pc.Game.extend('TheGame',
       {
         this.deactivateScene(this.menuScene);
         this.activateScene(this.gameScene);
+      },
+
+      setHashState:function(k,v) {
+        var h = window.location.hash;
+        h = h.replace(new RegExp(k+"=[^,]*"), "");
+        h = h + k;
+        if(v) { h += '='+v; }
+        window.location.hash = h;
+      },
+
+      clearHashState:function(k) {
+        var h = window.location.hash;
+        h = h.replace(new RegExp(k+"=[^,]*"), "");
+        window.location.hash = h;
+      },
+
+      getHashState:function(k, def) {
+        var h = window.location.hash;
+        h = h.replace(/^#?/, '');
+        var pos = 0;
+        while((pos = h.indexOf(','+k, pos)) >= 0) {
+          var endOfKey = pos + k.length + 1;
+          var termChar = h.charAt(endOfKey);
+          if(termChar == ',')
+            return '';
+          if(termChar == '=') {
+            var endOfValue = h.indexOf(',', endOfKey+1) || h.length;
+          }
+        }
+        if(pos < 0) { return pc.checked(def, null); }
+        var end = h.indexOf(',', pos + k.length + 2);
       }
+
     });
 
 
