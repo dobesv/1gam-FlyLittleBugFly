@@ -39,6 +39,7 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         player.addComponent(SelfRighting.create());
 
         pc.device.input.bindAction(this, 'godmode', 'G');
+        pc.device.input.bindAction(this, 'kill', 'K');
       },
 
       onAction: function(actionName) {
@@ -46,6 +47,13 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         if(actionName == 'godmode') {
           this.godmode = !this.godmode;
           window.location.hash = this.godmode ? "#god" : "";
+        } else if(actionName == 'kill') {
+          var next = this.entities.first;
+          while (next)
+          {
+            next.obj.getComponent('player').die();
+            next = next.next();
+          }
         }
       },
 
