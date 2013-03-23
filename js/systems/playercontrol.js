@@ -63,9 +63,6 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
           if(!this.godmode) {
             player.getComponent('player').die();
           }
-        } else if(what.hasTag('pickup')) {
-          // Touched a pickup
-          what.remove(); // TODO: Play a pickup animation
         }
       },
 

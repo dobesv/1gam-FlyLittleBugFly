@@ -18,6 +18,7 @@ GameScene = pc.Scene.extend('GameScene',
 
       player:null,
       playerControlSystem:null,
+      pickupSystem:null,
 
       input:null,
 
@@ -51,9 +52,10 @@ GameScene = pc.Scene.extend('GameScene',
         this.gameLayer.addSystem(new FollowPathSystem());
         this.gameLayer.addSystem(new SelfRightingSystem());
         this.gameLayer.addSystem(new pc.systems.Activation());
+        this.gameLayer.addSystem(new pc.systems.Expiration());
         var playerControlSystem = this.playerControlSystem = new PlayerControlSystem();
         this.gameLayer.addSystem(playerControlSystem);
-        this.gameLayer.addSystem(new PickupSystem());
+        this.gameLayer.addSystem(this.pickupSystem = new PickupSystem());
 
         for(var n=1; n <= 3; n++) {
           var bgLayer = new ImageLayer('bglayer'+n, 3-n);
@@ -115,9 +117,17 @@ GameScene = pc.Scene.extend('GameScene',
       {
         if (aType == pc.BodyType.ENTITY && bType == pc.BodyType.ENTITY) {
           if(entityA.hasTag('player')) {
-            this.playerControlSystem.onTouchPlayer(entityA, entityB);
+            if(entityB.hasComponentOfType('pickup')) {
+              this.pickupSystem.onTouch(entityA, entityB);
+            } else {
+              this.playerControlSystem.onTouchPlayer(entityA, entityB);
+            }
           } else if(entityB.hasTag('player')) {
-            this.playerControlSystem.onTouchPlayer(entityB, entityA);
+            if(entityA.hasComponentOfType('pickup')) {
+              this.pickupSystem.onTouch(entityB, entityA);
+            } else {
+              this.playerControlSystem.onTouchPlayer(entityB, entityA);
+            }
           }
         }
       },
@@ -178,7 +188,7 @@ GameScene = pc.Scene.extend('GameScene',
             ent.addComponent(pc.components.Activator.create({
               tag:'player', range:900
             }));
-            ent.addTag('pickup');
+            ent.addComponent(PickupComponent.create({}));
           }
         }
 

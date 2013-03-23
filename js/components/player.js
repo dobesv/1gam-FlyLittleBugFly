@@ -9,6 +9,8 @@ PlayerComponent = pc.components.Component.extend('PlayerComponent',
       },
 
       die:function() {
+        if(this.dead)
+          return;
         this.dead = true;
         var ent = this.getEntity();
         ent.active = false;

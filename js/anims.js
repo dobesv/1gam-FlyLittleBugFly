@@ -69,14 +69,14 @@ animConfigs = {
   },
   orb1:{
     image:"orb1.png",
-    frameWidth: 42,
-    frameHeight: 42,
-
+    frameWidth: 130,
+    frameHeight: 131,
     anims: {
-      float:{frameCount:24, fps:24, framesWide: 6, framesHigh: 5}
+      float:{frameCount:30, fps:24, framesWide: 15, framesHigh: 2},
+      burst:{frameCount:12, fps:24, frameY: 2, framesWide: 12, stopAtEnd:true, loops:1}
     },
     shapes:[
-      {shape:pc.CollisionShape.CIRCLE}
+      {shape:pc.CollisionShape.CIRCLE, offset:{w:-100,h:-100}}
     ]
   }
 };
@@ -94,8 +94,8 @@ function setupAnims() {
   for(var k in animConfigs) {
     if(animConfigs.hasOwnProperty(k)) {
       var config = animConfigs[k];
-      var image = getImage(config.image);
-      var ss = anims[k] = new pc.SpriteSheet({image:image, frameWidth:config.frameWidth, frameHeight:config.frameHeight});
+      config.image = getImage(config.image);
+      var ss = anims[k] = new pc.SpriteSheet(config);
       var animDefs = config.anims;
       for(var animName in  animDefs) {
         if(animDefs.hasOwnProperty(animName)) {
