@@ -94,7 +94,7 @@ function loadAnims() {
 }
 function setupAnims() {
   for(var k in animConfigs) {
-    if(animConfigs.hasOwnProperty(k)) {
+    if(animConfigs.hasOwnProperty(k) && !(k in anims)) {
       var config = animConfigs[k];
       config.image = getImage(config.image);
       var ss = anims[k] = new pc.SpriteSheet(config);

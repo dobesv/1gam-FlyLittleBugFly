@@ -22,6 +22,9 @@ FollowPath = pc.components.Component.extend('FollowPath',
       {
         var path = opts.path;
         this.path = opts.path;
+        if(! pc.valid(this.path.points)) {
+          this.path.points = [[0,0]];
+        }
         //console.log("New follow path; path is ", path, path.x, path.y, path.points);
       }
 

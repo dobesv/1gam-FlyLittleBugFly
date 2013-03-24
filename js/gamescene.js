@@ -203,18 +203,24 @@ GameScene = pc.Scene.extend('GameScene',
       process:function ()
       {
 
-        var playerPos = this.player.getComponent('spatial').getCenterPos();
+        if(this.player && this.player.active) {
+          var playerPos = this.player.getComponent('spatial').getCenterPos();
 
-        // Follow the player
-        var targetOriginX = Math.max(0, Math.min(this.worldWidth - this.viewPort.w, playerPos.x - this.viewPort.w/3));
-        var targetOriginY = Math.max(0, Math.min(this.worldHeight - this.viewPort.h, playerPos.y - this.viewPort.h/2));
-        var currentOriginX = this.gameLayer.origin.x;
-        var currentOriginY = this.gameLayer.origin.y;
-        var originDeltaX = Math.round(Math.max(-20, Math.min(20, (targetOriginX-currentOriginX)*0.5)));
-        var originDeltaY = Math.round(Math.max(-20, Math.min(20, (targetOriginY-currentOriginY)*0.5)));
-        var originX = currentOriginX + originDeltaX;
-        var originY = currentOriginY + originDeltaY;
-        this.gameLayer.setOrigin(originX,  originY);
+          // Follow the player
+          var targetOriginX = Math.max(0, Math.min(this.worldWidth - this.viewPort.w, playerPos.x - this.viewPort.w/3));
+          var targetOriginY = Math.max(0, Math.min(this.worldHeight - this.viewPort.h, playerPos.y - this.viewPort.h/2));
+          var currentOriginX = this.gameLayer.origin.x;
+          var currentOriginY = this.gameLayer.origin.y;
+          var originDeltaX = Math.round(Math.max(-20, Math.min(20, (targetOriginX-currentOriginX)*0.5)));
+          var originDeltaY = Math.round(Math.max(-20, Math.min(20, (targetOriginY-currentOriginY)*0.5)));
+          var originX = currentOriginX + originDeltaX;
+          var originY = currentOriginY + originDeltaY;
+          this.gameLayer.setOrigin(originX,  originY);
+          if(playerPos.x > this.worldWidth - 120 || playerPos.y > this.worldHeight) {
+            // Game over
+            pc.device.game.pause();
+          }
+        }
 
         // Make the "rain layer" fall down
         var rainLayer = this.rainLayer;
@@ -228,10 +234,6 @@ GameScene = pc.Scene.extend('GameScene',
         // always call the super
         this._super();
 
-        if(playerPos.x > this.worldWidth - 120 || playerPos.y > this.worldHeight) {
-          // Game over
-          pc.device.game.pause();
-        }
 
         this.physics.setDebug(window.location.hash.indexOf('debug') > 0);
       }
