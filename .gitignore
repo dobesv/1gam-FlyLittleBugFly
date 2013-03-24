@@ -4,6 +4,7 @@
 ## Playcraft non-distributable js files
 playcraftjs/lib
 server
+easy-server-win32
 
 #################
 ## Eclipse
