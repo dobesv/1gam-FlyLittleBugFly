@@ -1,6 +1,6 @@
 animConfigs = {
   player:{
-    image:'bug_fly.png',
+    imagePath:'bug_fly.png',
     frameWidth: 44, // Width of each frame, assuming an even grid of frames
     frameHeight: 54, // Height of each frame, assuming an even grid of frames
     anims:{
@@ -21,7 +21,7 @@ animConfigs = {
     ]
   },
   player_tumble:{
-    image:'bug_tumble.png',
+    imagePath:'bug_tumble.png',
     frameWidth: 27,
     frameHeight: 28,
     anims:{
@@ -29,7 +29,7 @@ animConfigs = {
     }
   },
   seed_fall:{
-    image:'seed_hit.png',
+    imagePath:'seed_hit.png',
     frameWidth: 107,
     frameHeight: 87,
     anims:{
@@ -37,7 +37,7 @@ animConfigs = {
     }
   },
   bee:{
-    image:'bee_anim.png',
+    imagePath:'bee_anim.png',
     frameWidth:136,
     frameHeight:148,
     anims:{
@@ -52,7 +52,7 @@ animConfigs = {
 
   },
   mosquito:{
-    image:'mosquito.png',
+    imagePath:'mosquito.png',
     frameWidth: 215,
     frameHeight: 215,
     anims: {
@@ -68,7 +68,7 @@ animConfigs = {
     ]
   },
   orb1:{
-    image:"orb1.png",
+    imagePath:"orb1.png",
     frameWidth: 130,
     frameHeight: 131,
     framesWide: 15,
@@ -88,7 +88,7 @@ anims = {};
 function loadAnims() {
   for(var k in animConfigs) {
     if(animConfigs.hasOwnProperty(k)) {
-      loadImage(animConfigs[k].image);
+      loadImage(animConfigs[k].imagePath);
     }
   }
 }
@@ -96,7 +96,7 @@ function setupAnims() {
   for(var k in animConfigs) {
     if(animConfigs.hasOwnProperty(k) && !(k in anims)) {
       var config = animConfigs[k];
-      config.image = getImage(config.image);
+      config.image = getImage(config.imagePath);
       var ss = anims[k] = new pc.SpriteSheet(config);
       var animDefs = config.anims;
       for(var animName in  animDefs) {
