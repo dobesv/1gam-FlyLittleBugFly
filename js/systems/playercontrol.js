@@ -90,17 +90,17 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
           var pY = this.layer.screenY(playerPos.y);
 
           if(pos.y < pY-50) { flyY -= 1; }
-          if(pos.y > pY+50) { flyY += 0.5; }
+          if(pos.y > pY+50) { flyY += 1; }
           if(pos.x < pX-50) { flyX -= 1; }
-          if(pos.x > pX+50) { flyX += 3; }
+          if(pos.x > pX+50) { flyX += 1; }
         } else {
           if(isOn('up')) { flyY -= 1; };
-          if(isOn('down')) { flyY += 0.5; };
+          if(isOn('down')) { flyY += 1; };
           if(isOn('left')) { flyX -= 1; };
-          if(isOn('right')) { flyX += 3; };
+          if(isOn('right')) { flyX += 1; };
         }
         var flying = (flyX || flyY);
-        var pushX = flyX+1;
+        var pushX = flyX+1.25;
         var pushY = flyY+0.1;
         if(pushX) { playerPhysics.applyForce(pushX,0); }
         if(pushY) { playerPhysics.applyForce(pushY,90); }
