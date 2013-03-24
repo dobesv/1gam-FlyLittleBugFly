@@ -73,7 +73,7 @@ GameScene = pc.Scene.extend('GameScene',
         riverLayer.setOriginTrack(this.gameLayer);
         this.addLayer(riverLayer);
 
-        ['scenery_close', 'scenery_far', 'scenery_front'].forEach(function(layerName, n) {
+        ['scenery_close','scenery_close2', 'scenery_far', 'scenery_front'].forEach(function(layerName, n) {
           var layer = this.get(layerName);
           if(pc.valid(layer))
             layer.setOriginTrack(this.gameLayer);
