@@ -69,18 +69,11 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
       process: function(player)
       {
         var c = player.getComponent('player');
-        if (!c.active) return;
+        if (!c.active || c.dead) return;
 
         var playerSpatial = player.getComponent('spatial');
         var playerPhysics = player.getComponent('physics');
         var playerPos = playerSpatial.getPos();
-        if(c.dead) {
-          playerPhysics.setCollisionMask(0);
-          playerPhysics.setGravity(0, playerPhysics.mass * 200);
-          playerPhysics.applyTurn(360);
-          player.getComponent('sprite').sprite.setAnimation('float');
-          return;
-        }
 
         var isOn = function isOn(s) {
           return this.input.isInputState(player, s);

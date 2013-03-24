@@ -13,7 +13,6 @@ PlayerComponent = pc.components.Component.extend('PlayerComponent',
           return;
         this.dead = true;
         var ent = this.getEntity();
-        ent.active = false;
         // Spawn dead bug and dandelion
 
         var playerSpatial = ent.getComponent('spatial');
@@ -28,6 +27,7 @@ PlayerComponent = pc.components.Component.extend('PlayerComponent',
         tumbler.addComponent(pc.components.Physics.create({
           gravity: {x: 0, y: 5},
           linearVelocity: linearVelocity,
+          collisionGroup:-1,
           collisionCategory:COLLIDE_PLAYER,
           collisionMask:COLLIDE_ENEMY
         }));
@@ -40,11 +40,11 @@ PlayerComponent = pc.components.Component.extend('PlayerComponent',
           x: playerSpatial.pos.x, y: playerSpatial.pos.y, w: seedAnim.frameWidth, h: seedAnim.frameHeight
         }));
         seed.addComponent(pc.components.Expiry.create({lifetime:5000}))
-//        seed.addComponent(pc.components.Physics.create({
-//          gravity: {x: 1, y: 1}, linearVelocity: linearVelocity
-//        }));
 
-
+        playerPhysics.setGravity(0,0);
+        playerPhysics.setCollisionMask(0);
+        playerPhysics.setCollisionGroup(0);
+        ent.active = false;
       }
     });
 
