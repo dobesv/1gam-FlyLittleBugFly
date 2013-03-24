@@ -75,7 +75,8 @@ GameScene = pc.Scene.extend('GameScene',
 
         ['scenery_close', 'scenery_far', 'scenery_front'].forEach(function(layerName, n) {
           var layer = this.get(layerName);
-          layer.setOriginTrack(this.gameLayer);
+          if(pc.valid(layer))
+            layer.setOriginTrack(this.gameLayer);
         }, this);
 
         var rainLayer = this.rainLayer = this.get('rain');
