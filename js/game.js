@@ -51,8 +51,7 @@ TheGame = pc.Game.extend('TheGame',
         ctx.fillText('Loading: ' + percentageComplete + '%', 40, pc.device.canvasHeight / 2);
       },
 
-      onLoaded:function ()
-      {
+      onLoaded:function () {
         // Erase loading screen
         var ctx = pc.device.ctx;
         ctx.clearRect(0, 0, pc.device.canvasWidth, pc.device.canvasHeight);
@@ -76,15 +75,31 @@ TheGame = pc.Game.extend('TheGame',
 
         pc.device.input.bindAction(this, 'pause', 'P');
         pc.device.input.bindAction(this, 'pause', 'PAUSE');
+        pc.device.input.bindAction(this, 'restart', 'R');
+        pc.device.input.bindAction(this, 'toggleDebug', 'D');
       },
 
       onAction:function(actionName) {
         console.log('Game action', actionName);
-        if(actionName == 'pause') {
-          if(this.gameScene.paused)
-            this.gameScene.resume();
-          else
-            this.gameScene.pause();
+        switch(actionName) {
+          case 'pause':
+            if(this.gameScene.paused)
+              this.gameScene.resume();
+            else
+              this.gameScene.pause();
+            break;
+          case 'restart':
+            if(this.gameScene) {
+              this.deactivateScene(this.gameScene);
+              console.log('old scene: '+this.gameScene+"  ... "+this.gameScene.gameLayer+"   "+this.gameScene.player);
+            }
+            this.addScene(this.gameScene = new GameScene());
+            this.activateScene(this.gameScene);
+            console.log('new scene: '+this.gameScene+"  ... "+this.gameScene.gameLayer+"   "+this.gameScene.player);
+            break;
+          case 'toggleDebug':
+            this.gameScene.physics.setDebug(this.toggleHashState('debug'));
+            break;
         }
       },
 
@@ -110,7 +125,7 @@ TheGame = pc.Game.extend('TheGame',
 
       clearHashState:function(k) {
         var h = window.location.hash;
-        h = h.replace(new RegExp(k+"=[^,]*"), "");
+        h = h.replace(new RegExp(k+"(=[^,]*)?(,|$)"), "");
         window.location.hash = h;
       },
 
@@ -140,6 +155,16 @@ TheGame = pc.Game.extend('TheGame',
 
       hasHashState:function(k) {
         return pc.valid(this.getHashState(k));
+      },
+
+      toggleHashState:function(k) {
+        if(this.hasHashState(k)) {
+          this.clearHashState(k);
+          return false;
+        } else {
+          this.setHashState(k);
+          return true;
+        }
       }
 
     });

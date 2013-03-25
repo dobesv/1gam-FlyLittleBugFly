@@ -29,8 +29,6 @@ GameScene = pc.Scene.extend('GameScene',
       init:function () {
         this._super();
 
-        this.emitters = [];
-
         this.rain = new Rain();
 
         this.loadFromTMX(getTileMap('level1'), this);
@@ -91,8 +89,7 @@ GameScene = pc.Scene.extend('GameScene',
         this.gameLayer.addSystem(input);
 
         physics.onCollisionStart = this.onCollisionStart.bind(this);
-
-        this.physics.setDebug(pc.device.game.hasHashState('debug'));
+        physics.setDebug(pc.device.game.hasHashState('debug'));
 
       },
       /**
@@ -186,11 +183,6 @@ GameScene = pc.Scene.extend('GameScene',
         }
 
         ent.addTag(type);
-      },
-
-      // handle menu actions
-      onAction:function (actionName, event, pos, uiTarget)
-      {
       },
 
       process:function ()
