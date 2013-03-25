@@ -8,7 +8,7 @@ PickupSystem = pc.systems.EntitySystem.extend('PickupSystem',
       },
 
 
-      process: function(player)
+      process: function(pickup)
       {
 
       },
