@@ -45,11 +45,7 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
       onAction: function(actionName) {
         console.log("Action: "+actionName);
         if(actionName == 'godmode') {
-          this.godmode = !this.godmode;
-          if(this.godmode)
-            pc.device.game.setHashState('god');
-          else
-            pc.device.game.clearHashState('god');
+          this.godmode = pc.device.game.toggleHashState('god');
         } else if(actionName == 'kill') {
           var next = this.entities.first;
           while (next)
