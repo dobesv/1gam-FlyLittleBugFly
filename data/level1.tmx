@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="2000" height="24" tilewidth="32" tileheight="32">
+ <properties>
+  <property name="tracklayer" value="entity"/>
+ </properties>
  <tileset firstgid="1" name="images/tiles" tilewidth="32" tileheight="32">
-  <image source="..\images\tiles.png" width="192" height="240"/>
+  <image source="../images/tiles.png" width="192" height="240"/>
  </tileset>
  <tileset firstgid="43" name="images/object_tiles" tilewidth="32" tileheight="32">
   <image source="../images/object_tiles.png" width="1024" height="768"/>
@@ -14,6 +17,8 @@
  </tileset>
  <layer name="background" width="2000" height="24">
   <properties>
+   <property name="tracklayer" value="entity"/>
+   <property name="trackratio" value="0.1"/>
    <property name="zindex" value="4"/>
   </properties>
   <data encoding="base64">
@@ -22,6 +27,7 @@
  </layer>
  <layer name="scenery_far" width="2000" height="24">
   <properties>
+   <property name="tracklayer" value="entity"/>
    <property name="zindex" value="5"/>
   </properties>
   <data encoding="base64">
@@ -30,6 +36,7 @@
  </layer>
  <layer name="scenery_close2" width="2000" height="24">
   <properties>
+   <property name="tracklayer" value="entity"/>
    <property name="zindex" value="6"/>
   </properties>
   <data encoding="base64">
@@ -38,6 +45,7 @@
  </layer>
  <layer name="scenery_close" width="2000" height="24">
   <properties>
+   <property name="tracklayer" value="entity"/>
    <property name="zindex" value="6"/>
   </properties>
   <data encoding="base64">
