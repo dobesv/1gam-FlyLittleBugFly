@@ -8,7 +8,7 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
       init: function()
       {
         this._super(['player']);
-        this.godmode = location.hash.indexOf('god') >= 0;
+        this.godmode = pc.device.game.hasHashState('god');
       },
 
       onEntityAdded:function(player) {
@@ -46,7 +46,10 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         console.log("Action: "+actionName);
         if(actionName == 'godmode') {
           this.godmode = !this.godmode;
-          window.location.hash = this.godmode ? "#god" : "";
+          if(this.godmode)
+            pc.device.game.setHashState('god');
+          else
+            pc.device.game.clearHashState('god');
         } else if(actionName == 'kill') {
           var next = this.entities.first;
           while (next)

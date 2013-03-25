@@ -102,9 +102,9 @@ TheGame = pc.Game.extend('TheGame',
 
       setHashState:function(k,v) {
         var h = window.location.hash;
-        h = h.replace(new RegExp(k+"=[^,]*"), "");
+        h = h.replace(new RegExp(k+"(=[^,]*)?(,|$)"), "");
         h = h + k;
-        if(v) { h += '='+v; }
+        if(pc.valid(v)) { h += '='+v; }
         window.location.hash = h;
       },
 
@@ -116,19 +116,30 @@ TheGame = pc.Game.extend('TheGame',
 
       getHashState:function(k, def) {
         var h = window.location.hash;
-        h = h.replace(/^#?/, '');
-        var pos = 0;
-        while((pos = h.indexOf(','+k, pos)) >= 0) {
-          var endOfKey = pos + k.length + 1;
-          var termChar = h.charAt(endOfKey);
-          if(termChar == ',')
-            return '';
-          if(termChar == '=') {
-            var endOfValue = h.indexOf(',', endOfKey+1) || h.length;
+        if(h && h.length > 1) {
+          h = h.replace(/^#?,*/, ',').replace(/,*$/,','); // delimit with commas to make separator processing simpler
+          var pos = 0;
+          while((pos = h.indexOf(','+k, pos)) >= 0) {
+            var endOfKey = pos + k.length + 1;
+            var termChar = h.charAt(endOfKey);
+            if(termChar == ',')
+              return true;
+            if(termChar == '=') {
+              var endOfValue = h.indexOf(',', endOfKey+1) || h.length;
+              var value = h.substring(endOfKey + 1, endOfValue);
+              if(value == 'false')
+                return false;
+              if(value == 'true')
+                return true;
+              return  value;
+            }
           }
         }
-        if(pos < 0) { return pc.checked(def, null); }
-        var end = h.indexOf(',', pos + k.length + 2);
+        return def;
+      },
+
+      hasHashState:function(k) {
+        return pc.valid(this.getHashState(k));
       }
 
     });

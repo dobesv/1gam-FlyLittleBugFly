@@ -92,6 +92,8 @@ GameScene = pc.Scene.extend('GameScene',
 
         physics.onCollisionStart = this.onCollisionStart.bind(this);
 
+        this.physics.setDebug(pc.device.game.hasHashState('debug'));
+
       },
       /**
        * Called when an entity first collides with a tile or another entity. Use the fixture types to differentiate
@@ -226,6 +228,5 @@ GameScene = pc.Scene.extend('GameScene',
         this._super();
 
 
-        this.physics.setDebug(window.location.hash.indexOf('debug') > 0);
       }
     });
