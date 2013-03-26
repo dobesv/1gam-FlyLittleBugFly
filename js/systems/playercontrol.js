@@ -6,6 +6,7 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
       godmode:false,
       windSpeed:0.8,
       fallSpeed:0.1,
+      waterLevel: 650,
 
       init: function()
       {
@@ -38,7 +39,7 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
           shapes:getAnimShapes('player'),
           collisionGroup:COLLIDE_PLAYER,
           collisionCategory:COLLIDE_PLAYER,
-          collisionMask:COLLIDE_DROPS|COLLIDE_WALL|COLLIDE_ENEMY|COLLIDE_PICKUP
+          collisionMask:COLLIDE_DROPS|COLLIDE_WALL|COLLIDE_ENEMY|COLLIDE_PICKUP|COLLIDE_RIVER
         }));
         player.addComponent(SelfRighting.create());
 
@@ -81,14 +82,18 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         }
       },
 
-      process: function(player)
-      {
+      process: function(player) {
         var c = player.getComponent('player');
-        if (!c.active || c.dead) return;
+        if (!c.active) return;
 
         var playerSpatial = player.getComponent('spatial');
         var playerPhysics = player.getComponent('physics');
         var playerPos = playerSpatial.getPos();
+
+        if(playerPos.y >= this.waterLevel) {
+          c.die(true);
+          return;
+        }
 
         var isOn = function isOn(s) {
           return this.input.isInputState(player, s);
@@ -141,6 +146,34 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         } else {
           if(pc.valid(text)) text.active = false;
         }
-      }
+      },
 
+      createSplash: function (ent, spatial) {
+        var splash = pc.Entity.create(ent.layer);
+        var splashAnim = getAnim('bug_splash');
+        splash.addComponent(pc.components.Sprite.create({spriteSheet: splashAnim, animationStart: 'splash'}));
+        splash.addComponent(pc.components.Spatial.create({
+          x: spatial.pos.x + spatial.dim.x / 2 - splashAnim.frameWidth / 2,
+          y: spatial.pos.y + spatial.dim.y / 2 - splashAnim.frameHeight / 2,
+          w: splashAnim.frameWidth,
+          h: splashAnim.frameHeight
+        }));
+        splash.addComponent(pc.components.Expiry.create({lifetime: 5000}));
+        return {splash: splash, splashAnim: splashAnim};
+      },
+
+      processAll:function() {
+      this._super();
+        var debrisList = this.layer.getEntityManager().getTagged('debris');
+        if(debrisList) {
+          for(var next = debrisList.first; next; next = next.next()) {
+            var ent = next.obj;
+            var sp = ent.getComponent('spatial');
+            if(sp.pos.y >= this.waterLevel) {
+              this.createSplash(ent, sp);
+              ent.remove();
+            }
+          }
+        }
+      }
     });

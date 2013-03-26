@@ -4,6 +4,7 @@ var COLLIDE_WALL=2;
 var COLLIDE_DROPS=4;
 var COLLIDE_ENEMY=8;
 var COLLIDE_PICKUP=16;
+var COLLIDE_RIVER=32;
 
 /**
  * GameScene
@@ -14,7 +15,7 @@ GameScene = pc.Scene.extend('GameScene',
     {
       gameLayer:null,
       bgLayer:null,
-      rainLayer:null,
+//      rainLayer:null,
 
       player:null,
       playerControlSystem:null,
@@ -24,7 +25,6 @@ GameScene = pc.Scene.extend('GameScene',
 
       rain:null,
       physics:null,
-
 
       init:function () {
         this._super();
@@ -36,7 +36,11 @@ GameScene = pc.Scene.extend('GameScene',
         //-----------------------------------------------------------------------------
         // game layer
         //-----------------------------------------------------------------------------
-        var gameLayer = this.gameLayer = this.get('entity');
+        var gameLayer = this.gameLayer;
+        if(!gameLayer) {
+          alert('No player start position in map...');
+          throw new Error('No player start position.');
+        }
         var wh = this.worldHeight = this.gameLayer.worldSize.y;
         var ww = this.worldWidth = this.gameLayer.worldSize.x;
         //console.log('World size', this.worldWidth, this.worldHeight);
@@ -71,18 +75,18 @@ GameScene = pc.Scene.extend('GameScene',
         riverLayer.setOriginTrack(gameLayer);
         this.addLayer(riverLayer);
 
-        var rainLayer = this.rainLayer = this.get('rain');
-        var rainTileMap = rainLayer.tileMap;
-        var tilesHigh = rainTileMap.tilesHigh;
-        for(var aty = 0; aty < rainTileMap.tilesHigh; aty++) {
-          rainTileMap.tiles[aty+tilesHigh] = rainTileMap.tiles[aty];
-        }
-        rainTileMap.tilesHigh = tilesHigh*2;
+//        var rainLayer = this.rainLayer = this.get('rain');
+//        var rainTileMap = rainLayer.tileMap;
+//        var tilesHigh = rainTileMap.tilesHigh;
+//        for(var aty = 0; aty < rainTileMap.tilesHigh; aty++) {
+//          rainTileMap.tiles[aty+tilesHigh] = rainTileMap.tiles[aty];
+//        }
+//        rainTileMap.tilesHigh = tilesHigh*2;
 
-        physics.createStaticBody(   0,   0,  ww, 1,  0, COLLIDE_WALL, COLLIDE_PLAYER); // top
-        physics.createStaticBody(   0,wh-1,  ww, 1,  0, COLLIDE_WALL, COLLIDE_PLAYER); // bottom
         physics.createStaticBody(   0,   0,   1,wh,  0, COLLIDE_WALL, COLLIDE_PLAYER); // left
         physics.createStaticBody(ww-1,   0,   1,wh,  0, COLLIDE_WALL, COLLIDE_PLAYER); // right
+        physics.createStaticBody(   0,   0,  ww, 1,  0, COLLIDE_WALL, COLLIDE_PLAYER); // top
+        physics.createStaticBody(   0,wh-1,  ww, 1,  0, COLLIDE_WALL, COLLIDE_PLAYER); // bottom
 
         var input = this.input = playerControlSystem.input = new pc.systems.Input();
         input.onAction = this.onAction.bind(this);
@@ -151,6 +155,7 @@ GameScene = pc.Scene.extend('GameScene',
               return;
             }
             this.player = ent;
+            this.gameLayer = layer;
             ent.addComponent(PlayerComponent.create({}));
           } else if(type == 'bee' || type == 'mosquito') {
             ent.addComponent(pc.components.Physics.create({
@@ -205,15 +210,15 @@ GameScene = pc.Scene.extend('GameScene',
           var originY = currentOriginY + originDeltaY;
           this.gameLayer.setOrigin(originX,  originY);
           if(playerPos.x > this.worldWidth - 120 || playerPos.y > this.worldHeight) {
-            // Game over
+            // Level complete
             pc.device.game.pause();
           }
         }
 
         // Make the "rain layer" fall down
-        var rainLayer = this.rainLayer;
-        var rainOriginY = this.gameLayer.origin.y + (this.worldHeight - ((Date.now()/2) % this.worldHeight));
-        rainLayer.setOrigin(originX, rainOriginY);
+//        var rainLayer = this.rainLayer;
+//        var rainOriginY = this.gameLayer.origin.y + (this.worldHeight - ((Date.now()/2) % this.worldHeight));
+//        rainLayer.setOrigin(originX, rainOriginY);
 
         if(pc.device.canvasHeight > this.worldHeight) {
           pc.device.ctx.clearRect(0, this.worldHeight, pc.device.canvasWidth, pc.device.canvasHeight-this.worldHeight);

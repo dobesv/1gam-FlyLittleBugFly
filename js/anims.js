@@ -33,7 +33,15 @@ animConfigs = {
     frameWidth: 107,
     frameHeight: 87,
     anims:{
-      fall:{offsetX:-63, offsetY:0, frameCount:16, frameWidth:4, loops:1, holdOnEnd:true}
+      fall:{offsetX:-63, offsetY:0, frameCount:16, frameWidth:4, fps:24, loops:1, holdOnEnd:true}
+    }
+  },
+  bug_splash:{
+    imagePath:'bug_splash.png',
+    frameWidth: 131,
+    frameHeight: 66,
+    anims:{
+      splash:{frameCount:28, loops: 1, fps:30, holdOnEnd: true}
     }
   },
   bee:{
