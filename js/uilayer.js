@@ -66,7 +66,7 @@ UILayer = pc.Layer.extend('UILayer', {}, {
   draw:function() {
     if(this.showFailure) {
       var failedY = pc.device.canvasHeight/2 - this.buttonImages.failed.height/2;
-      var failedX = pc.device.canvasWidth/3 - this.buttonImages.failed.width/2;
+      var failedX = pc.device.canvasWidth/2 - this.buttonImages.failed.width;
       this.buttonImages.failed.draw(pc.device.ctx, failedX, failedY + this.failureMenuPos);
 
       var tryAgainY = this.buttonImages.playAgain.y = pc.device.canvasHeight/2;
