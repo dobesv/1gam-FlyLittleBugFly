@@ -26,3 +26,57 @@ function getTileMap(name) {
     var id = name.replace(/\.tmx$/, "");
     return pc.device.loader.get('tilemaps/'+id).resource;
 }
+
+HashState = {
+  set:function(k,v) {
+    var h = window.location.hash;
+    h = h.replace(new RegExp(k+"(=[^,]*)?(,|$)"), "");
+    h = h + k;
+    if(pc.valid(v)) { h += '='+v; }
+    window.location.hash = h;
+  },
+
+  clear:function(k) {
+    var h = window.location.hash;
+    h = h.replace(new RegExp(k+"(=[^,]*)?(,|$)"), "");
+    window.location.hash = h;
+  },
+
+  get:function(k, def) {
+    var h = window.location.hash;
+    if(h && h.length > 1) {
+      h = h.replace(/^#?,*/, ',').replace(/,*$/,','); // delimit with commas to make separator processing simpler
+      var pos = 0;
+      while((pos = h.indexOf(','+k, pos)) >= 0) {
+        var endOfKey = pos + k.length + 1;
+        var termChar = h.charAt(endOfKey);
+        if(termChar == ',')
+          return true;
+        if(termChar == '=') {
+          var endOfValue = h.indexOf(',', endOfKey+1) || h.length;
+          var value = h.substring(endOfKey + 1, endOfValue);
+          if(value == 'false')
+            return false;
+          if(value == 'true')
+            return true;
+          return  value;
+        }
+      }
+    }
+    return def;
+  },
+
+  has:function(k) {
+    return pc.valid(this.getHashState(k));
+  },
+
+  toggle:function(k) {
+    if(this.hasHashState(k)) {
+      this.clearHashState(k);
+      return false;
+    } else {
+      this.setHashState(k);
+      return true;
+    }
+  }
+}

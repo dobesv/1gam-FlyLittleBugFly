@@ -1,11 +1,25 @@
 PlayerComponent = pc.components.Component.extend('PlayerComponent',
     {
+      create:function (options)
+      {
+        var c = this._super();
+        c.config(options);
+        return  c;
+      }
     },
     {
+      energy:100,
       dead:false,
 
-      init: function() {
+      init: function(options) {
         this._super('player');
+        if(pc.valid(options))
+          this.config(options);
+      },
+
+      config:function(options) {
+        this.energy = pc.checked(options.energy, 100);
+        this.dead = false;
       },
 
       die:function() {

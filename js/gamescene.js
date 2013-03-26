@@ -91,7 +91,7 @@ GameScene = pc.Scene.extend('GameScene',
         physics.onCollisionStart = this.onCollisionStart.bind(this);
         physics.setDebug(pc.device.game.hasHashState('debug'));
 
-        var uiLayer = this.uiLayer = new pc.EntityLayer('ui layer', 1024, 768);
+        this.addLayer(new UILayer(20));
 
 
       },
@@ -151,7 +151,7 @@ GameScene = pc.Scene.extend('GameScene',
               return;
             }
             this.player = ent;
-            ent.addComponent(PlayerComponent.create());
+            ent.addComponent(PlayerComponent.create({}));
           } else if(type == 'bee' || type == 'mosquito') {
             ent.addComponent(pc.components.Physics.create({
               linearDamping:1,
