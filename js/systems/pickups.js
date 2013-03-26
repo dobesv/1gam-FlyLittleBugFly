@@ -23,6 +23,8 @@ PickupSystem = pc.systems.EntitySystem.extend('PickupSystem',
         var physics = pickup.getComponent('physics');
         physics.setCollisionMask(0);
         physics.active = false;
+
+        player.getComponent('player').onPickupEnergy(c.energyValue);
       }
 
     });

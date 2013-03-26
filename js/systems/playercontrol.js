@@ -104,20 +104,23 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
 
         var flyX = 0;
         var flyY = 0;
-        if(isOn('lmb')) {
-          var pos = pc.device.input.mousePos;
-          var pX = this.layer.screenX(playerPos.x);
-          var pY = this.layer.screenY(playerPos.y);
+        var strength = 0.2 + c.energy/100;
+        if(!c.resting || this.godmode) {
+          if(isOn('lmb')) {
+            var pos = pc.device.input.mousePos;
+            var pX = this.layer.screenX(playerPos.x);
+            var pY = this.layer.screenY(playerPos.y);
 
-          if(pos.y < pY-50) { flyY -= 1; }
-          if(pos.y > pY+50) { flyY += 1; }
-          if(pos.x < pX-50) { flyX -= 1; }
-          if(pos.x > pX+50) { flyX += 1; }
-        } else {
-          if(isOn('up')) { flyY -= 1; };
-          if(isOn('down')) { flyY += 1; };
-          if(isOn('left')) { flyX -= 1; };
-          if(isOn('right')) { flyX += 1; };
+            if(pos.y < pY-50) { flyY -= strength; }
+            if(pos.y > pY+50) { flyY += strength; }
+            if(pos.x < pX-50) { flyX -= strength; }
+            if(pos.x > pX+50) { flyX += strength; }
+          } else {
+            if(isOn('up')) { flyY -= strength; };
+            if(isOn('down')) { flyY += strength; };
+            if(isOn('left')) { flyX -= strength; };
+            if(isOn('right')) { flyX += strength; };
+          }
         }
         var flying = (flyX || flyY);
         var pushX = flyX+this.windSpeed;
@@ -128,6 +131,21 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         var targetAngle = Math.max(-15, Math.min(45, playerPhysics.getVelocityAngle()-90));
         player.getComponent('selfrighting').targetDir = flying ? targetAngle : 0;
         player.getComponent('sprite').sprite.setAnimation(flying?'fly':'float');
+
+        if(flying && !this.godmode) {
+          if(c.energy > 0)
+            c.energy -= pc.device.elapsed * (c.energy < 10 ? 0.025 : c.energy < 50 ? 0.03 : 0.04);
+          if(c.energy < 1) c.resting = true;
+        } else {
+          if(c.energy < 100)
+            c.energy += pc.device.elapsed * (c.energy < 10 ? 0.03 : c.energy < 50 ? 0.025 : 0.015);
+          if(c.energy >= 25) {
+            c.resting = false;
+            if(c.energy >= 110) {
+              c.energy = 110;
+            }
+          }
+        }
 
         var text = player.getComponent('text');
         if(this.godmode) {

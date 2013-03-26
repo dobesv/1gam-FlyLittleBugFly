@@ -11,6 +11,7 @@ UILayer = pc.Layer.extend('UILayer', {}, {
   },
   showFailure:false,
   failureMenuPos:0,
+  energyLevel:1,
 
   init:function(zIndex) {
     this._super('ui layer', 100);
@@ -53,8 +54,10 @@ UILayer = pc.Layer.extend('UILayer', {}, {
         this.showFailure = true;
         this.failureMenuPos = pc.device.canvasHeight;
       }
+      this.energyLevel = 0;
     } else {
       this.showFailure = false;
+      this.energyLevel = Math.max(0, Math.min(1, playerControl.energy/100));
     }
 
     if(this.showFailure) {
@@ -62,6 +65,7 @@ UILayer = pc.Layer.extend('UILayer', {}, {
         this.failureMenuPos = Math.max(0, this.failureMenuPos - pc.device.elapsed);
       }
     }
+
   },
   draw:function() {
     if(this.showFailure) {
@@ -72,6 +76,17 @@ UILayer = pc.Layer.extend('UILayer', {}, {
       var tryAgainY = this.buttonImages.playAgain.y = pc.device.canvasHeight/2;
       var tryAgainX = this.buttonImages.playAgain.x = failedX + this.buttonImages.failed.width;
       this.buttonImages.playAgain.draw(pc.device.ctx, tryAgainX, tryAgainY + this.failureMenuPos);
+    } else {
+      var frameX = 10;
+      var frameY = 10;
+      var ebX = 12;
+      var ebY = 10;
+      var e = this.energyLevel;
+      var ebW = 266 * e;
+      var ebH = 25;
+      pc.device.ctx.fillStyle = e > 0.5 ? '#00FF00' : e > 0.2 ? '#FFFF00' : "#FF0000";
+      pc.device.ctx.fillRect(ebX + frameX,ebY + frameY,ebW,ebH);
+      this.hudImages.energyBarOutline.draw(pc.device.ctx, frameX, frameY);
     }
 
   }

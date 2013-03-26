@@ -9,6 +9,7 @@ PlayerComponent = pc.components.Component.extend('PlayerComponent',
     },
     {
       energy:100,
+      resting:false,
       dead:false,
 
       init: function(options) {
@@ -73,6 +74,11 @@ PlayerComponent = pc.components.Component.extend('PlayerComponent',
         playerPhysics.setCollisionMask(0);
         playerPhysics.setCollisionGroup(0);
         ent.active = false;
+      },
+
+      onPickupEnergy:function(amount) {
+        this.energy += amount;
+        this.resting = false;
       }
     });
 
