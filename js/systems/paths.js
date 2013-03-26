@@ -12,6 +12,7 @@ FollowPathSystem = pc.systems.EntitySystem.extend('FollowPathSystem',
 
       process: function(entity)
       {
+        if(!entity.active) return;
         var c = entity.getComponent('followpath');
         if (!c.active) return;
 
@@ -26,8 +27,8 @@ FollowPathSystem = pc.systems.EntitySystem.extend('FollowPathSystem',
         var targetPt = this.targetPt;
         if(c.pathPosition < path.points.length) {
           var targetCoord = path.points[c.pathPosition]; // [x,y]
-          targetPt.x = targetCoord[0] + path.x;
-          targetPt.y = targetCoord[1] + path.y;
+          targetPt.x = targetCoord[0] + path.x - spatial.dim.x*0.5;
+          targetPt.y = targetCoord[1] + path.y - spatial.dim.y*0.5;
         } else {
           if(this.layer.screenX(spatial.pos.x) < 0) {
             entity.remove();
