@@ -91,6 +91,9 @@ GameScene = pc.Scene.extend('GameScene',
         physics.onCollisionStart = this.onCollisionStart.bind(this);
         physics.setDebug(pc.device.game.hasHashState('debug'));
 
+        var uiLayer = this.uiLayer = new pc.EntityLayer('ui layer', 1024, 768);
+
+
       },
       /**
        * Called when an entity first collides with a tile or another entity. Use the fixture types to differentiate
