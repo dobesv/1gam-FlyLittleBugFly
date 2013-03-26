@@ -4,11 +4,15 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
     {
       input:null,
       godmode:false,
+      windSpeed:0.8,
+      fallSpeed:0.1,
 
       init: function()
       {
         this._super(['player']);
         this.godmode = pc.device.game.hasHashState('god');
+        this.windSpeed = parseFloat(pc.device.game.getHashState('windSpeed', '0')) || this.windSpeed;
+        this.fallSpeed = parseFloat(pc.device.game.getHashState('fallSpeed', '0')) || this.fallSpeed;
       },
 
       onEntityAdded:function(player) {
@@ -40,6 +44,10 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
 
         pc.device.input.bindAction(this, 'godmode', 'G');
         pc.device.input.bindAction(this, 'kill', 'K');
+        pc.device.input.bindAction(this, 'wind+', 'NUM_6');
+        pc.device.input.bindAction(this, 'wind-', 'NUM_4');
+        pc.device.input.bindAction(this, 'gravity+', 'NUM_2');
+        pc.device.input.bindAction(this, 'gravity-', 'NUM_8');
       },
 
       onAction: function(actionName) {
@@ -53,6 +61,14 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
             next.obj.getComponent('player').die();
             next = next.next();
           }
+        } else if(actionName == 'wind+') {
+          pc.device.game.setHashState('windSpeed', this.windSpeed += 0.1);
+        } else if(actionName == 'wind-') {
+          pc.device.game.setHashState('windSpeed', this.windSpeed -= 0.1);
+        } else if(actionName == 'gravity+') {
+          pc.device.game.setHashState('fallSpeed', this.fallSpeed += 0.05);
+        } else if(actionName == 'gravity-') {
+          pc.device.game.setHashState('fallSpeed', this.fallSpeed -= 0.05);
         }
       },
 
@@ -99,8 +115,8 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
           if(isOn('right')) { flyX += 1; };
         }
         var flying = (flyX || flyY);
-        var pushX = flyX+1.25;
-        var pushY = flyY+0.1;
+        var pushX = flyX+this.windSpeed;
+        var pushY = flyY+this.fallSpeed;
         if(pushX) { playerPhysics.applyForce(pushX,0); }
         if(pushY) { playerPhysics.applyForce(pushY,90); }
 
