@@ -4,9 +4,9 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
     {
       input:null,
       godmode:false,
-      windSpeed:0.8,
-      fallSpeed:0.1,
-      waterLevel: 650,
+      windSpeed:Parameters.windSpeed,
+      fallSpeed:Parameters.fallSpeed,
+      waterLevel: Parameters.waterLevel,
 
       init: function()
       {
@@ -31,11 +31,11 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         player.addComponent(input);
         player.addComponent(pc.components.Physics.create({
           //gravity:{x:0,y:1},
-          linearDamping:1,
-          mass:0.1,
+          linearDamping:Parameters.playerLinearDamping,
+          mass:Parameters.playerMass,
           faceVel:true,
-          maxSpeed:{x:100,y:100},
-          bounce:3,
+          maxSpeed:{x:Parameters.playerMaxSpeed,y:Parameters.playerMaxSpeed},
+          bounce:Parameters.playerBounce,
           shapes:getAnimShapes('player'),
           collisionGroup:COLLIDE_PLAYER,
           collisionCategory:COLLIDE_PLAYER,
@@ -104,7 +104,7 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
 
         var flyX = 0;
         var flyY = 0;
-        var strength = 0.2 + c.energy/100;
+        var strength = Parameters.flyStrength(c.energy);
         if(!c.resting || this.godmode) {
           if(isOn('lmb')) {
             var pos = pc.device.input.mousePos;
@@ -134,15 +134,15 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
 
         if(flying && !this.godmode) {
           if(c.energy > 0)
-            c.energy -= pc.device.elapsed * (c.energy < 10 ? 0.025 : c.energy < 50 ? 0.03 : 0.04);
+            c.energy -= pc.device.elapsed * Parameters.flyingEnergyConsumption(c.energy);
           if(c.energy < 1) c.resting = true;
         } else {
           if(c.energy < 100)
-            c.energy += pc.device.elapsed * (c.energy < 10 ? 0.03 : c.energy < 50 ? 0.025 : 0.015);
-          if(c.energy >= 25) {
+            c.energy += pc.device.elapsed * Parameters.restingEnergyRechargeRate(c.energy);
+          if(c.energy >= Parameters.restStateExitLevel) {
             c.resting = false;
-            if(c.energy >= 110) {
-              c.energy = 110;
+            if(c.energy >= Parameters.maxOvercharge) {
+              c.energy = Parameters.maxOvercharge;
             }
           }
         }
