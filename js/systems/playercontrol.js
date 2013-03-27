@@ -7,6 +7,8 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
       windSpeed:Parameters.windSpeed,
       fallSpeed:Parameters.fallSpeed,
       waterLevel: Parameters.waterLevel,
+      recoveryRateAdjust: 0,
+      drainRateAdjust:0,
 
       init: function()
       {
@@ -14,6 +16,8 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         this.godmode = pc.device.game.hasHashState('god');
         this.windSpeed = parseFloat(pc.device.game.getHashState('windSpeed', '0')) || this.windSpeed;
         this.fallSpeed = parseFloat(pc.device.game.getHashState('fallSpeed', '0')) || this.fallSpeed;
+        this.recoveryRateAdjust = parseFloat(pc.device.game.getHashState('recoveryRateAdjust', '0')) || this.recoveryRateAdjust;
+        this.drainRateAdjust = parseFloat(pc.device.game.getHashState('drainRateAdjust', '0')) || this.drainRateAdjust;
       },
 
       onEntityAdded:function(player) {
@@ -49,12 +53,16 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         pc.device.input.bindAction(this, 'wind-', 'NUM_4');
         pc.device.input.bindAction(this, 'gravity+', 'NUM_2');
         pc.device.input.bindAction(this, 'gravity-', 'NUM_8');
+        pc.device.input.bindAction(this, 'drainRate+', 'NUM_9');
+        pc.device.input.bindAction(this, 'drainRate-', 'NUM_7');
+        pc.device.input.bindAction(this, 'recoveryRate+', 'NUM_3');
+        pc.device.input.bindAction(this, 'recoveryRate-', 'NUM_1');
       },
 
       onAction: function(actionName) {
-        console.log("Action: "+actionName);
+        this.info("Action: "+actionName);
         if(actionName == 'godmode') {
-          this.godmode = pc.device.game.toggleHashState('god');
+          pc.device.game.toggleHashState('god', this.godmode = !this.godmode);
         } else if(actionName == 'kill') {
           var next = this.entities.first;
           while (next)
@@ -70,6 +78,14 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
           pc.device.game.setHashState('fallSpeed', this.fallSpeed += 0.05);
         } else if(actionName == 'gravity-') {
           pc.device.game.setHashState('fallSpeed', this.fallSpeed -= 0.05);
+        } else if(actionName == 'drainRate+') {
+          pc.device.game.setHashState('drainRateAdjust', this.drainRateAdjust += 0.005);
+        } else if(actionName == 'drainRate-') {
+          pc.device.game.setHashState('drainRateAdjust', this.drainRateAdjust -= 0.005);
+        } else if(actionName == 'recoveryRate+') {
+          pc.device.game.setHashState('recoveryRateAdjust', this.recoveryRateAdjust += 0.005);
+        } else if(actionName == 'recoveryRate-') {
+          pc.device.game.setHashState('recoveryRateAdjust', this.recoveryRateAdjust -= 0.005);
         }
       },
 
@@ -90,7 +106,7 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         var playerPhysics = player.getComponent('physics');
         var playerPos = playerSpatial.getPos();
 
-        if(playerPos.y >= this.waterLevel) {
+        if(playerPos.y >= this.waterLevel && !this.godmode) {
           c.die(true);
           return;
         }
@@ -134,11 +150,11 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
 
         if(flying && !this.godmode) {
           if(c.energy > 0)
-            c.energy -= pc.device.elapsed * Parameters.flyingEnergyConsumption(c.energy);
+            c.energy -= pc.device.elapsed * (Parameters.flyingEnergyConsumption(c.energy) + this.drainRateAdjust);
           if(c.energy < 1) c.resting = true;
         } else {
           if(c.energy < 100)
-            c.energy += pc.device.elapsed * Parameters.restingEnergyRechargeRate(c.energy);
+            c.energy += pc.device.elapsed * (Parameters.restingEnergyRechargeRate(c.energy) + this.recoveryRateAdjust);
           if(c.energy >= Parameters.restStateExitLevel) {
             c.resting = false;
             if(c.energy >= Parameters.maxOvercharge) {

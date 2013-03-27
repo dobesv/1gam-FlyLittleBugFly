@@ -28,18 +28,27 @@ function getTileMap(name) {
 }
 
 HashState = {
-  set:function(k,v) {
-    var h = window.location.hash;
-    h = h.replace(new RegExp(k+"(=[^,]*)?(,|$)"), "");
+  _clear:function(h, k) {
+    var result = h.replace(new RegExp('#'+k+'(=[^,]*)?,*'), "#");
+    if(result != h) return result;
+    return h.replace(new RegExp(','+k+'(=[^,]*)?'), "");
+  },
+
+  _set:function(h, k, v) {
+    var h = this._clear(h, k);
+    if(h.length > 1) h += ',';
     h = h + k;
-    if(pc.valid(v)) { h += '='+v; }
-    window.location.hash = h;
+    if(typeof v !== 'undefined') { h += '='+v; }
+    console.log('Set '+k+' to '+v+' : '+h);
+    return h;
+  },
+
+  set:function(k,v) {
+    window.location.hash = this._set(window.location.hash, k, v);
   },
 
   clear:function(k) {
-    var h = window.location.hash;
-    h = h.replace(new RegExp(k+"(=[^,]*)?(,|$)"), "");
-    window.location.hash = h;
+    window.location.hash = this._clear(window.location.hash, k);
   },
 
   get:function(k, def) {
@@ -67,15 +76,18 @@ HashState = {
   },
 
   has:function(k) {
-    return pc.valid(this.getHashState(k));
+    return pc.valid(this.get(k));
   },
 
-  toggle:function(k) {
-    if(this.hasHashState(k)) {
-      this.clearHashState(k);
+  toggle:function(k, b) {
+    if(arguments.length < 2) {
+      b = this.has(k);
+    }
+    if(!b) {
+      this.clear(k);
       return false;
     } else {
-      this.setHashState(k);
+      this.set(k);
       return true;
     }
   }

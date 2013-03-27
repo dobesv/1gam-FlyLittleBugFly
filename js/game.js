@@ -66,8 +66,8 @@ TheGame = pc.Game.extend('TheGame',
 
         setupAnims();
         // create the game scene (notice we do it here AFTER the resources are loaded)
-        this.gameScene = new GameScene();
-        this.addScene(this.gameScene, false);
+        //this.gameScene = new GameScene();
+        //this.addScene(this.gameScene, false);
 
         // create the menu scene (but don't make it active)
         this.menuScene = new MenuScene();
@@ -122,11 +122,11 @@ TheGame = pc.Game.extend('TheGame',
         return this.gameScene.player;
       },
 
-      setHashState:HashState.set,
-      clearHashState:HashState.clear,
-      getHashState:HashState.get,
-      hasHashState:HashState.has,
-      toggleHashState:HashState.toggle
+      setHashState:HashState.set.bind(HashState),
+      clearHashState:HashState.clear.bind(HashState),
+      getHashState:HashState.get.bind(HashState),
+      hasHashState:HashState.has.bind(HashState),
+      toggleHashState:HashState.toggle.bind(HashState)
 
     });
 
