@@ -73,6 +73,7 @@ GameScene = pc.Scene.extend('GameScene',
           var left=0;
           imlist.forEach(function(im) {
             var bgLayer = new ImageLayer(im, 3-n);
+            bgLayer.repeatX = false;
             bgLayer.x = left;
             left += bgLayer.image.width;
             //bgLayer.fitTo(bgLayer.image.width, this.worldHeight);
