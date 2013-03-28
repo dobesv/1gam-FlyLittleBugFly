@@ -9,6 +9,7 @@ PlayerComponent = pc.components.Component.extend('PlayerComponent',
     },
     {
       energy:100,
+      orbsCollected:0,
       resting:false,
       dead:false,
 
@@ -78,6 +79,7 @@ PlayerComponent = pc.components.Component.extend('PlayerComponent',
 
       onPickupEnergy:function(amount) {
         this.energy += amount;
+        this.orbsCollected += 1;
         this.resting = false;
       }
     });

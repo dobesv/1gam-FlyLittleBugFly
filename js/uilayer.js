@@ -13,13 +13,17 @@ UILayer = pc.Layer.extend('UILayer', {}, {
   failureMenuPos:0,
   energyLevel:1,
 
+  levelCompleteImage:null,
+  levelCompletePos:0,
+  showLevelComplete:false,
+
   init:function(zIndex) {
     this._super('ui layer', 100);
     this.hudImages.energyBarOutline = getImage('energy_bar');
     this.buttonImages.failed = getImage('button_you_failed');
     this.buttonImages.playAgain = getImage('button_play_again');
     this.buttonImages.mainMenu = getImage('button_main_menu');
-
+    this.levelCompleteImage = getImage('end_screen');
     pc.device.input.bindAction(this, 'click', 'MOUSE_BUTTON_LEFT_DOWN');
     pc.device.input.bindAction(this, 'click', 'TOUCH');
   },
@@ -52,15 +56,29 @@ UILayer = pc.Layer.extend('UILayer', {}, {
       // Show "you're dead!"
       if(!this.showFailure) {
         this.showFailure = true;
-        this.failureMenuPos = pc.device.canvasHeight;
+        this.failureMenuPos = pc.device.canvasHeight*2;
       }
       this.energyLevel = 0;
     } else {
       this.showFailure = false;
       this.energyLevel = Math.max(0, Math.min(1, playerControl.energy/100));
     }
+    if(pc.device.game.gameScene.levelComplete) {
+      if(!this.showLevelComplete) {
+        this.showLevelComplete = true;
+        this.levelCompletePos = pc.device.canvasHeight;
+      }
+      this.energyLevel = 100;
+    } else {
+      this.showLevelComplete = false;
+    }
 
-    if(this.showFailure) {
+
+    if(this.showLevelComplete) {
+      if(this.levelCompletePos > 0) {
+        this.levelCompletePos = Math.max(0, this.levelCompletePos - pc.device.elapsed);
+      }
+    } else if(this.showFailure) {
       if(this.failureMenuPos > 0) {
         this.failureMenuPos = Math.max(0, this.failureMenuPos - pc.device.elapsed);
       }
@@ -74,7 +92,21 @@ UILayer = pc.Layer.extend('UILayer', {}, {
     image.setScale(wobbleX, wobbleY);
   },
   draw:function() {
-    if(this.showFailure) {
+    if(this.showLevelComplete) {
+      var levelCompleteX = pc.device.canvasWidth/2 - this.levelCompleteImage.width/2;
+      var levelCompleteY = pc.device.canvasHeight/2 - this.levelCompleteImage.height/2;
+      this.levelCompleteImage.draw(pc.device.ctx, levelCompleteX, levelCompleteY + this.levelCompletePos);
+      var orbs = pc.device.game.gameScene.player.getComponent('player').orbsCollected;
+      var orbsX = 190;
+      var orbsY = 580;
+      pc.device.ctx.textAlign='right';
+      pc.device.ctx.font = 'bold 68px Calibri';
+      pc.device.ctx.fillStyle = '#C4401B';
+      pc.device.ctx.fillText(''+orbs, orbsX + 2, orbsY + this.levelCompletePos + 2);
+      pc.device.ctx.font = '62px Calibri';
+      pc.device.ctx.fillStyle = '#FFCE38';
+      pc.device.ctx.fillText(''+orbs, orbsX, orbsY + this.levelCompletePos);
+    } else if(this.showFailure) {
       var failedY = pc.device.canvasHeight/2 - this.buttonImages.failed.height/2;
       var failedX = pc.device.canvasWidth/2 - this.buttonImages.failed.width;
       this.wobble(this.buttonImages.failed, failedX);

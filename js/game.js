@@ -34,6 +34,7 @@ TheGame = pc.Game.extend('TheGame',
           'button_play_again.png',
           'button_you_failed.png',
           'energy_bar.png',
+          'end_screen.png',
           'menu_button_about.png',
           'menu_button_start.png',
           'title_screen.jpg'].forEach(loadImage);

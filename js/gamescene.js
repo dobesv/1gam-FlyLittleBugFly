@@ -25,11 +25,13 @@ GameScene = pc.Scene.extend('GameScene',
 
       rain:null,
       physics:null,
+      levelComplete:false,
 
       init:function () {
         this._super();
 
         this.rain = new Rain();
+        this.levelComplete = false;
 
         this.loadFromTMX(getTileMap('level1'), this);
 
@@ -100,9 +102,9 @@ GameScene = pc.Scene.extend('GameScene',
 //        rainTileMap.tilesHigh = tilesHigh*2;
 
         physics.createStaticBody(   0,   0,   1,wh,  0, COLLIDE_WALL, COLLIDE_PLAYER); // left
-        physics.createStaticBody(ww-1,   0,   1,wh,  0, COLLIDE_WALL, COLLIDE_PLAYER); // right
+        //physics.createStaticBody(ww-1,   0,   1,wh,  0, COLLIDE_WALL, COLLIDE_PLAYER); // right
         physics.createStaticBody(   0,   0,  ww, 1,  0, COLLIDE_WALL, COLLIDE_PLAYER); // top
-        physics.createStaticBody(   0,wh-1,  ww, 1,  0, COLLIDE_WALL, COLLIDE_PLAYER); // bottom
+        //physics.createStaticBody(   0,wh-1,  ww, 1,  0, COLLIDE_WALL, COLLIDE_PLAYER); // bottom
 
         var input = this.input = playerControlSystem.input = new pc.systems.Input();
         input.onAction = this.onAction.bind(this);
@@ -211,8 +213,7 @@ GameScene = pc.Scene.extend('GameScene',
 
       process:function ()
       {
-
-        if(this.player && this.player.active) {
+        if(!this.levelComplete && this.player && this.player.active) {
           var playerPos = this.player.getComponent('spatial').getCenterPos();
 
           // Follow the player
@@ -225,9 +226,10 @@ GameScene = pc.Scene.extend('GameScene',
           var originX = currentOriginX + originDeltaX;
           var originY = currentOriginY + originDeltaY;
           this.gameLayer.setOrigin(originX,  originY);
-          if(playerPos.x > this.worldWidth - 50 || playerPos.y > this.worldHeight) {
+          if(playerPos.x >= this.worldWidth) {
             // Level complete
-            pc.device.game.pause();
+            this.levelComplete = true;
+            console.log('level complete!');
           }
         }
 

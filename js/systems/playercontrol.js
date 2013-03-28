@@ -125,6 +125,14 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
           c.die(true);
           return;
         }
+        if(pc.device.game.gameScene.levelComplete) {
+          c.active = false;
+          playerPhysics.setCollisionMask(0);
+          if(playerSpatial.pos.x < player.layer.worldSize.x) {
+            playerPhysics.applyForce(1,0);
+          }
+          return;
+        }
 
         var isOn = function isOn(s) {
           return this.input.isInputState(player, s);
