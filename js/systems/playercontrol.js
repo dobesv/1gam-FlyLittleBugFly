@@ -57,36 +57,51 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
         pc.device.input.bindAction(this, 'drainRate-', 'NUM_7');
         pc.device.input.bindAction(this, 'recoveryRate+', 'NUM_3');
         pc.device.input.bindAction(this, 'recoveryRate-', 'NUM_1');
+        pc.device.input.bindAction(this, 'J1', '1');
+        pc.device.input.bindAction(this, 'J2', '2');
+        pc.device.input.bindAction(this, 'J3', '3');
+        pc.device.input.bindAction(this, 'J4', '4');
+        pc.device.input.bindAction(this, 'J5', '5');
+        pc.device.input.bindAction(this, 'J6', '6');
+        pc.device.input.bindAction(this, 'J7', '7');
+        pc.device.input.bindAction(this, 'J8', '8');
+        pc.device.input.bindAction(this, 'J9', '9');
+        pc.device.input.bindAction(this, 'J0', '0');
       },
 
       onAction: function(actionName) {
         this.info("Action: "+actionName);
-        if(actionName == 'godmode') {
-          pc.device.game.toggleHashState('god', this.godmode = !this.godmode);
-        } else if(actionName == 'kill') {
-          var next = this.entities.first;
-          while (next)
-          {
-            next.obj.getComponent('player').die();
-            next = next.next();
-          }
-        } else if(actionName == 'wind+') {
-          pc.device.game.setHashState('windSpeed', this.windSpeed += 0.1);
-        } else if(actionName == 'wind-') {
-          pc.device.game.setHashState('windSpeed', this.windSpeed -= 0.1);
-        } else if(actionName == 'gravity+') {
-          pc.device.game.setHashState('fallSpeed', this.fallSpeed += 0.05);
-        } else if(actionName == 'gravity-') {
-          pc.device.game.setHashState('fallSpeed', this.fallSpeed -= 0.05);
-        } else if(actionName == 'drainRate+') {
-          pc.device.game.setHashState('drainRateAdjust', this.drainRateAdjust += 0.005);
-        } else if(actionName == 'drainRate-') {
-          pc.device.game.setHashState('drainRateAdjust', this.drainRateAdjust -= 0.005);
-        } else if(actionName == 'recoveryRate+') {
-          pc.device.game.setHashState('recoveryRateAdjust', this.recoveryRateAdjust += 0.005);
-        } else if(actionName == 'recoveryRate-') {
-          pc.device.game.setHashState('recoveryRateAdjust', this.recoveryRateAdjust -= 0.005);
+        switch(actionName) {
+          case 'godmode': pc.device.game.toggleHashState('god', this.godmode = !this.godmode); break;
+          case 'kill':  getPlayer().getComponent('player').die(); break;
+          case 'wind+': pc.device.game.setHashState('windSpeed', this.windSpeed += 0.1); break;
+          case 'wind-': pc.device.game.setHashState('windSpeed', this.windSpeed -= 0.1); break;
+          case 'gravity+': pc.device.game.setHashState('fallSpeed', this.fallSpeed += 0.05); break;
+          case 'gravity-': pc.device.game.setHashState('fallSpeed', this.fallSpeed -= 0.05); break;
+          case 'drainRate+': pc.device.game.setHashState('drainRateAdjust', this.drainRateAdjust += 0.005); break;
+          case 'drainRate-': pc.device.game.setHashState('drainRateAdjust', this.drainRateAdjust -= 0.005); break;
+          case 'recoveryRate+': pc.device.game.setHashState('recoveryRateAdjust', this.recoveryRateAdjust += 0.005); break;
+          case 'recoveryRate-': pc.device.game.setHashState('recoveryRateAdjust', this.recoveryRateAdjust -= 0.005); break;
+          case 'J1': this.jumpTo(0.1); break;
+          case 'J2': this.jumpTo(0.2); break;
+          case 'J3': this.jumpTo(0.3); break;
+          case 'J4': this.jumpTo(0.4); break;
+          case 'J5': this.jumpTo(0.5); break;
+          case 'J6': this.jumpTo(0.6); break;
+          case 'J7': this.jumpTo(0.7); break;
+          case 'J8': this.jumpTo(0.8); break;
+          case 'J9': this.jumpTo(0.9); break;
+          case 'J0': this.jumpTo(1.0); break;
         }
+      },
+
+      getPlayer: function() {
+        return this.entities.first ? this.entities.first.obj : null;
+      },
+
+      jumpTo: function(levelFraction) {
+        var player = this.getPlayer();
+        player.getComponent('spatial').pos.x = (player.layer.worldSize.x - 1024) * levelFraction;
       },
 
       onTouchPlayer: function(player, what) {

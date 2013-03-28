@@ -59,18 +59,34 @@ GameScene = pc.Scene.extend('GameScene',
         this.gameLayer.addSystem(playerControlSystem);
         this.gameLayer.addSystem(this.pickupSystem = new PickupSystem());
 
-        for(var n=1; n <= 3; n++) {
-          var bgLayer = new ImageLayer('bglayer'+n, 3-n);
-          bgLayer.fitTo(this.worldWidth, this.worldHeight);
-          var ratio = 0.9 / (n * n);
-          bgLayer.setOriginTrack(gameLayer, ratio, ratio);
-          this.addLayer(bgLayer);
-          var rainRatio = ratio + 0.1;
-          var rainBgLayer = new RainBgLayer(3-n+0.1, 10/rainRatio, rainRatio*20);
-          rainBgLayer.setOriginTrack(this.gameLayer, ratio, ratio);
-          this.addLayer(rainBgLayer);
-        }
-        var riverLayer = new ImageLayer('river', 3);
+        var bgs = [['bglayer1', 'bglayer1', 'bglayer1', 'bglayer1', 'bglayer1', 'bglayer1', 'bglayer1e'],
+                   ['bglayer2', 'bglayer2', 'bglayer2', 'bglayer2', 'bglayer2e'],
+                   ['bglayer3', 'bglayer3e']];
+        bgs.forEach(function(imlist, n) {
+          var totalWidth = 0;
+          imlist.forEach(function(im) {
+            totalWidth += getImage(im).width;
+          });
+          var ratio = totalWidth / this.worldWidth;
+          var left=0;
+          imlist.forEach(function(im) {
+            var bgLayer = new ImageLayer(im, 3-n);
+            bgLayer.x = left;
+            left += bgLayer.image.width;
+            //bgLayer.fitTo(bgLayer.image.width, this.worldHeight);
+            bgLayer.setOriginTrack(gameLayer, ratio, ratio);
+            this.addLayer(bgLayer);
+          }, this);
+        }, this);
+//        for(var n=1; n <= 3; n++) {
+//
+//
+//          var rainRatio = ratio + 0.1;
+//          var rainBgLayer = new RainBgLayer(3-n+0.1, 10/rainRatio, rainRatio*20);
+//          rainBgLayer.setOriginTrack(this.gameLayer, ratio, ratio);
+//          this.addLayer(rainBgLayer);
+//        }
+        var riverLayer = new ImageLayer('river', 4);
         riverLayer.moveToBottom(this.worldHeight);
         riverLayer.setOriginTrack(gameLayer);
         this.addLayer(riverLayer);
@@ -204,12 +220,12 @@ GameScene = pc.Scene.extend('GameScene',
           var targetOriginY = Math.max(0, Math.min(this.worldHeight - this.viewPort.h, playerPos.y - this.viewPort.h/2));
           var currentOriginX = this.gameLayer.origin.x;
           var currentOriginY = this.gameLayer.origin.y;
-          var originDeltaX = Math.round(Math.max(-20, Math.min(20, (targetOriginX-currentOriginX)*0.5)));
-          var originDeltaY = Math.round(Math.max(-20, Math.min(20, (targetOriginY-currentOriginY)*0.5)));
+          var originDeltaX = (targetOriginX-currentOriginX)*0.5;
+          var originDeltaY = (targetOriginY-currentOriginY)*0.5;
           var originX = currentOriginX + originDeltaX;
           var originY = currentOriginY + originDeltaY;
           this.gameLayer.setOrigin(originX,  originY);
-          if(playerPos.x > this.worldWidth - 120 || playerPos.y > this.worldHeight) {
+          if(playerPos.x > this.worldWidth - 50 || playerPos.y > this.worldHeight) {
             // Level complete
             pc.device.game.pause();
           }
