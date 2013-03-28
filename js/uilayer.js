@@ -67,14 +67,22 @@ UILayer = pc.Layer.extend('UILayer', {}, {
     }
 
   },
+  wobble:function(image,x) {
+    var wobbleAngle = (Date.now() + x)*0.005;
+    var wobbleX = 1+0.01*Math.sin(wobbleAngle);
+    var wobbleY = 1+0.01*Math.sin(wobbleAngle + Math.PI);
+    image.setScale(wobbleX, wobbleY);
+  },
   draw:function() {
     if(this.showFailure) {
       var failedY = pc.device.canvasHeight/2 - this.buttonImages.failed.height/2;
       var failedX = pc.device.canvasWidth/2 - this.buttonImages.failed.width;
+      this.wobble(this.buttonImages.failed, failedX);
       this.buttonImages.failed.draw(pc.device.ctx, failedX, failedY + this.failureMenuPos);
 
       var tryAgainY = this.buttonImages.playAgain.y = pc.device.canvasHeight/2;
       var tryAgainX = this.buttonImages.playAgain.x = failedX + this.buttonImages.failed.width;
+      this.wobble(this.buttonImages.playAgain, tryAgainX);
       this.buttonImages.playAgain.draw(pc.device.ctx, tryAgainX, tryAgainY + this.failureMenuPos);
     } else {
       var frameX = 10;
