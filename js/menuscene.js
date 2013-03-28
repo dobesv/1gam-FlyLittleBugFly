@@ -7,7 +7,7 @@ MenuScene = pc.Scene.extend('MenuScene',
     {
       menuLayer:null,
       menuItems:null,
-      currentMenuSelection: 0,
+      currentButtonDown:null,
       titleButtons:[
         {
           action:'startGame',
@@ -17,6 +17,7 @@ MenuScene = pc.Scene.extend('MenuScene',
           entity:null
         }
       ],
+
 
       init:function ()
       {
@@ -50,25 +51,53 @@ MenuScene = pc.Scene.extend('MenuScene',
           var ss = new pc.SpriteSheet({image:img});
           ent.addComponent(pc.components.Sprite.create({spriteSheet:ss}));
         }, this);
+        pc.device.input.bindAction(this, 'up', 'MOUSE_BUTTON_LEFT_UP');
+        pc.device.input.bindAction(this, 'down', 'MOUSE_BUTTON_LEFT_DOWN');
       },
 
       changeMenuSelection: function(newSelection)
       {
       },
 
+      onMouseDown:function(pos) {
+        if(this.currentButtonDown != null) {
+          this.onMouseUp();
+        }
+        this.titleButtons.forEach(function(but) {
+          var sp = but.entity.getComponent('spatial');
+          if(sp.getScreenRect().containsPoint(pos)) {
+            sp.pos.x += 2;
+            sp.pos.y += 2;
+            this.currentButtonDown = but;
+          }
+        }, this);
+      },
+
+      onMouseUp:function(pos) {
+        if(this.currentButtonDown) {
+          var sp = this.currentButtonDown.entity.getComponent('spatial');
+          sp.pos.x = this.currentButtonDown.x;
+          sp.pos.y = this.currentButtonDown.y;
+          if(pos && sp.getScreenRect().containsPoint(pos)) {
+            var action = this.currentButtonDown.action;
+            setTimeout(function() {
+              pc.device.game.onAction(action);
+            }, 150);
+          }
+        }
+      },
+
       // handle menu actions
       onAction:function (actionName, event, pos, uiTarget)
       {
-        console.log('Action: '+actionName);
-        this.titleButtons.forEach(function(but) {
-          if(but.action == actionName) {
-            var sp = but.entity.getComponent('spatial');
-            sp.pos.x += 2;
-            sp.pos.y += 2;
-          }
-        }, this);
-        this.process();
-        pc.device.game.onAction(actionName);
+        switch(actionName) {
+          case 'down':
+            this.onMouseDown(pos);
+            break;
+          case 'up':
+            this.onMouseUp(pos);
+            break;
+        }
       },
 
       process:function ()
