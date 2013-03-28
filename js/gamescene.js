@@ -62,7 +62,7 @@ GameScene = pc.Scene.extend('GameScene',
         for(var n=1; n <= 3; n++) {
           var bgLayer = new ImageLayer('bglayer'+n, 3-n);
           bgLayer.fitTo(this.worldWidth, this.worldHeight);
-          var ratio = 1 / (n * n);
+          var ratio = 0.9 / (n * n);
           bgLayer.setOriginTrack(gameLayer, ratio, ratio);
           this.addLayer(bgLayer);
           var rainRatio = ratio + 0.1;
