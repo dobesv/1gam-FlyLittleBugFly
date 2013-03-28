@@ -97,6 +97,7 @@ TheGame = pc.Game.extend('TheGame',
             break;
           case 'startGame':
           case 'restart':
+            this.deactivateScene(this.menuScene);
             if(this.gameScene) {
               this.deactivateScene(this.gameScene);
               console.log('old scene: '+this.gameScene+"  ... "+this.gameScene.gameLayer+"   "+this.gameScene.player);
