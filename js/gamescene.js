@@ -69,7 +69,8 @@ GameScene = pc.Scene.extend('GameScene',
           imlist.forEach(function(im) {
             totalWidth += getImage(im).width;
           });
-          var ratio = totalWidth / this.worldWidth;
+          // TODO Move all this into the BgImageLayer ...
+          var ratio = (totalWidth - 1024) / Math.max(1, this.worldWidth - 1024);
           var left=0;
           imlist.forEach(function(im) {
             var bgLayer = new ImageLayer(im, 3-n);
