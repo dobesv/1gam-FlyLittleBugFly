@@ -45,7 +45,7 @@ MenuScene = pc.Scene.extend('MenuScene',
           ent.addComponent(pc.components.Spatial.create(but));
           ent.addComponent(pc.components.Input.create({
             actions: [[but.action, ['MOUSE_BUTTON_LEFT_DOWN', 'TOUCH'], true]],
-            target: pc.device.game
+            target: this
           }));
           var ss = new pc.SpriteSheet({image:img});
           ent.addComponent(pc.components.Sprite.create({spriteSheet:ss}));
@@ -60,6 +60,15 @@ MenuScene = pc.Scene.extend('MenuScene',
       onAction:function (actionName, event, pos, uiTarget)
       {
         console.log('Action: '+actionName);
+        this.titleButtons.forEach(function(but) {
+          if(but.action == actionName) {
+            var sp = but.entity.getComponent('spatial');
+            sp.pos.x += 2;
+            sp.pos.y += 2;
+          }
+        }, this);
+        this.process();
+        pc.device.game.onAction(actionName);
       },
 
       process:function ()
