@@ -92,30 +92,34 @@ UILayer = pc.Layer.extend('UILayer', {}, {
     image.setScale(wobbleX, wobbleY);
   },
   draw:function() {
-    if(this.showLevelComplete) {
-      var levelCompleteX = pc.device.canvasWidth/2 - this.levelCompleteImage.width/2;
-      var levelCompleteY = pc.device.canvasHeight/2 - this.levelCompleteImage.height/2;
-      this.levelCompleteImage.draw(pc.device.ctx, levelCompleteX, levelCompleteY + this.levelCompletePos);
+    function drawOrbCount(orbsX, orbsY) {
       var orbs = pc.device.game.gameScene.player.getComponent('player').orbsCollected;
-      var orbsX = 190;
-      var orbsY = 580;
-      pc.device.ctx.textAlign='right';
-      pc.device.ctx.font = 'bold 68px Calibri';
+      pc.device.ctx.textAlign = 'right';
+      pc.device.ctx.font = '65px Calibri';
       pc.device.ctx.fillStyle = '#C4401B';
-      pc.device.ctx.fillText(''+orbs, orbsX + 2, orbsY + this.levelCompletePos + 2);
+      pc.device.ctx.fillText('' + orbs, orbsX + 2, orbsY + 2);
       pc.device.ctx.font = '62px Calibri';
       pc.device.ctx.fillStyle = '#FFCE38';
-      pc.device.ctx.fillText(''+orbs, orbsX, orbsY + this.levelCompletePos);
+      pc.device.ctx.fillText('' + orbs, orbsX, orbsY);
+    }
+
+    if(this.showLevelComplete) {
+      var levelCompleteX = pc.device.canvasWidth/2 - this.levelCompleteImage.width/2;
+      var levelCompleteY = pc.device.canvasHeight/2 - this.levelCompleteImage.height/2 + this.levelCompletePos;
+      this.levelCompleteImage.draw(pc.device.ctx, levelCompleteX, levelCompleteY);
+      var orbsX = 190;
+      var orbsY = 580;
+      drawOrbCount.call(this, 190, 575 + this.levelCompletePos);
     } else if(this.showFailure) {
       var failedY = pc.device.canvasHeight/2 - this.buttonImages.failed.height/2;
-      var failedX = pc.device.canvasWidth/2 - this.buttonImages.failed.width;
+      var failedX = pc.device.canvasWidth/2 - this.buttonImages.failed.width + this.failureMenuPos;
       this.wobble(this.buttonImages.failed, failedX);
-      this.buttonImages.failed.draw(pc.device.ctx, failedX, failedY + this.failureMenuPos);
+      this.buttonImages.failed.draw(pc.device.ctx, failedX, failedY);
 
       var tryAgainY = this.buttonImages.playAgain.y = pc.device.canvasHeight/2;
-      var tryAgainX = this.buttonImages.playAgain.x = failedX + this.buttonImages.failed.width;
+      var tryAgainX = this.buttonImages.playAgain.x = failedX + this.buttonImages.failed.width + this.failureMenuPos;
       this.wobble(this.buttonImages.playAgain, tryAgainX);
-      this.buttonImages.playAgain.draw(pc.device.ctx, tryAgainX, tryAgainY + this.failureMenuPos);
+      this.buttonImages.playAgain.draw(pc.device.ctx, tryAgainX, tryAgainY);
     } else {
       var frameX = 10;
       var frameY = 10;
@@ -127,6 +131,8 @@ UILayer = pc.Layer.extend('UILayer', {}, {
       pc.device.ctx.fillStyle = e > 0.5 ? '#00FF00' : e > 0.2 ? '#FFFF00' : "#FF0000";
       pc.device.ctx.fillRect(ebX + frameX,ebY + frameY,ebW,ebH);
       this.hudImages.energyBarOutline.draw(pc.device.ctx, frameX, frameY);
+
+      drawOrbCount.call(this, 1010, 50);
     }
 
   }
