@@ -25,6 +25,9 @@ PickupSystem = pc.systems.EntitySystem.extend('PickupSystem',
         physics.active = false;
 
         player.getComponent('player').onPickupEnergy(c.energyValue);
+
+        if(c.pickupSound)
+          playSound(c.pickupSound);
       }
 
     });

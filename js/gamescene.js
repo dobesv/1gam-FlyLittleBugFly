@@ -60,6 +60,7 @@ GameScene = pc.Scene.extend('GameScene',
         var playerControlSystem = this.playerControlSystem = new PlayerControlSystem();
         this.gameLayer.addSystem(playerControlSystem);
         this.gameLayer.addSystem(this.pickupSystem = new PickupSystem());
+        this.gameLayer.addSystem(this.noiseSystem = new NoiseSystem());
 
         var bgs = [['bglayer1', 'bglayer1', 'bglayer1', 'bglayer1', 'bglayer1', 'bglayer1', 'bglayer1e'],
                    ['bglayer2', 'bglayer2', 'bglayer2', 'bglayer2', 'bglayer2e'],
@@ -192,6 +193,7 @@ GameScene = pc.Scene.extend('GameScene',
               tag:'player', range:900
             }));
             ent.addComponent(SelfRighting.create());
+            ent.addComponent(NoiseMaker.create({drone:'sounds/'+type+'_buzz'}));
             ent.addTag('predator');
           } else if(type == 'orb1') {
             ent.addComponent(pc.components.Physics.create({

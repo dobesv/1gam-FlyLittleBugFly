@@ -3,6 +3,11 @@
 ## Credits
 
 
-Cloudy skybox by Jockum Skoglund (hipshot) - http://opengameart.org/content/miramar-skybox
-Most other art by Glenn Martin
+Art by Glenn Martin
+
+Sounds:
+
+ - Buzz made by Dobes Vandermeer mucking around
+ - orb_pickup is from http://freesound.org/people/Soughtaftersounds/sounds/145459/
+
 

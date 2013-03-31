@@ -42,7 +42,14 @@ TheGame = pc.Game.extend('TheGame',
         loadTileMap('level1');
         loadAnims();
 
-        ['rain1', 'music1'].forEach(loadSound);
+        ['rain1',
+         'music1',
+         'bug_buzz'].forEach(loadSound);
+
+        ['bee_buzz',
+         'mosquito_buzz'].forEach(function(s) { loadSound(s, 3); });
+
+        ['orb_pickup'].forEach(function(s) { loadSound(s, 5); });
 
         // fire up the loader
         pc.device.loader.start(this.onLoading.bind(this), this.onLoaded.bind(this));

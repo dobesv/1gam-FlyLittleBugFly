@@ -46,6 +46,7 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
           collisionMask:COLLIDE_DROPS|COLLIDE_WALL|COLLIDE_ENEMY|COLLIDE_PICKUP|COLLIDE_RIVER
         }));
         player.addComponent(SelfRighting.create());
+        player.addComponent(NoiseMaker.create({}));
 
         pc.device.input.bindAction(this, 'godmode', 'G');
         pc.device.input.bindAction(this, 'kill', 'K');
@@ -184,6 +185,12 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
               c.energy = Parameters.maxOvercharge;
             }
           }
+        }
+
+        if(flying) {
+          player.getComponent('noise').play("sounds/bug_buzz", true);
+        } else {
+          player.getComponent('noise').stop();
         }
 
         var text = player.getComponent('text');
