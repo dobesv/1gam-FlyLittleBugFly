@@ -81,13 +81,10 @@ NoiseMaker = pc.components.Component.extend('NoiseMaker',
         }, this);
         this.queue.length = 0;
         if(vol != this.volume) {
-          if(this.sounds.length != 0 || this.loops.length != 0)
-            console.log("Adjusting volume on "+this._entity+" to "+vol);
           // If the volume is increased from silence, restart any loops
           var restartLoops = this.volume < 0.01 && notSilent;
           this.volume = vol;
           if(restartLoops) {
-            console.log('Restarting loops ...');
             this.loops.forEach(function(loop) {
               var s = loop.play(true);
               if(s) {
@@ -99,7 +96,6 @@ NoiseMaker = pc.components.Component.extend('NoiseMaker',
           this.sounds.forEach(function(s) {
             // If the volume is super low, just stop playing the sound
             if(!s.ended && !s.paused) {
-              console.log('Set volume on sound '+ s.src+' to '+vol);
               s.volume = vol;
               if(vol < 0.01)
                 s.pause();
