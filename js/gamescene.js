@@ -63,7 +63,7 @@ GameScene = pc.Scene.extend('GameScene',
         this.gameLayer.addSystem(this.noiseSystem = new NoiseSystem());
 
         var bgs = [['bglayer1', 'bglayer1', 'bglayer1', 'bglayer1', 'bglayer1', 'bglayer1', 'bglayer1e'],
-                   ['bglayer2', 'bglayer2', 'bglayer2', 'bglayer2', 'bglayer2e'],
+                   ['bglayer2', 'bglayer2', 'bglayer2', 'bglayer2e'],
                    ['bglayer3', 'bglayer3e']];
         bgs.forEach(function(imlist, n) {
           var totalWidth = 0;
