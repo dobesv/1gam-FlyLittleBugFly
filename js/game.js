@@ -45,7 +45,8 @@ TheGame = pc.Game.extend('TheGame',
         ['rain1',
          'music1',
          'bug_buzz',
-         'splash'].forEach(loadSound);
+         'splash',
+         'applause'].forEach(loadSound);
 
         ['bee_buzz',
          'mosquito_buzz'].forEach(function(s) { loadSound(s, 3); });

@@ -232,8 +232,8 @@ GameScene = pc.Scene.extend('GameScene',
           this.gameLayer.setOrigin(originX,  originY);
           if(playerPos.x >= this.worldWidth) {
             // Level complete
+            playSound('applause');
             this.levelComplete = true;
-            console.log('level complete!');
           }
         }
 
