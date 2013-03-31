@@ -12,6 +12,7 @@ NoiseMaker = pc.components.Component.extend('NoiseMaker',
     },
     {
       sounds: [],
+      queue: [],
       loops: [],
       volume: 0,
 
@@ -23,18 +24,24 @@ NoiseMaker = pc.components.Component.extend('NoiseMaker',
       config:function(opts) {
         this.loops.length = 0;
         this.sounds.length = 0;
+        this.queue.length = 0;
         this.volume = pc.checked(opts.volume, 1);
         if(opts.drone) {
-          var drone = typeof opts.drone === 'string' ? pc.device.loader.get(opts.drone).resource : opts.drone;
-          this.loops.push(drone);
+          this.play(opts.drone, true);
         }
+        if(opts.play) {
+          this.play(opts.play, false);
+        }
+      },
+
+      toSound:function(x) {
+        if(typeof x === 'string') return pc.device.loader.get(x).resource;
+        return x;
       },
 
       play:function(sound,loop) {
         if (!pc.device.soundEnabled) return;
-        if(typeof sound === 'string') {
-          sound = pc.device.loader.get(sound).resource;
-        }
+        sound = this.toSound(sound);
         if(loop) {
           // Don't play the same loop multiple times per entity ...
           for(var i=0; i < this.loops.length; i++) {
@@ -47,12 +54,7 @@ NoiseMaker = pc.components.Component.extend('NoiseMaker',
           // Don't start sounds that are too quiet to hear
           return;
         }
-        var s = sound.play(loop || false);
-        if(s) {
-          s.volume = this.volume;
-          this.sounds.push(s);
-        }
-        return s;
+        this.queue.push({sound:sound, loop:loop||false})
       },
 
       stop:function() {
@@ -68,11 +70,21 @@ NoiseMaker = pc.components.Component.extend('NoiseMaker',
        * @param vol New volume level (0.0-1.0)
        */
       setVolume:function(vol) {
+        var notSilent = vol >= 0.01;
+        this.queue.forEach(function(x) {
+          var s = x.sound.play(x.loop);
+          if(s) {
+            s.volume = this.volume;
+            this.sounds.push(s);
+          }
+          return s;
+        }, this);
+        this.queue.length = 0;
         if(vol != this.volume) {
           if(this.sounds.length != 0 || this.loops.length != 0)
             console.log("Adjusting volume on "+this._entity+" to "+vol);
           // If the volume is increased from silence, restart any loops
-          var restartLoops = this.volume < 0.01 && vol >= 0.01;
+          var restartLoops = this.volume < 0.01 && notSilent;
           this.volume = vol;
           if(restartLoops) {
             console.log('Restarting loops ...');

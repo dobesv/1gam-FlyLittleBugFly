@@ -61,6 +61,7 @@ PlayerComponent = pc.components.Component.extend('PlayerComponent',
             h: splashAnim.frameHeight
           }));
           splash.addComponent(pc.components.Expiry.create({lifetime:5000}));
+          splash.addComponent(NoiseMaker.create({play:'sounds/splash'}));
         }
 
         var seed = pc.Entity.create(ent.layer);

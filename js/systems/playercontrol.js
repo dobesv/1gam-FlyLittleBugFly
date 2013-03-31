@@ -223,6 +223,7 @@ PlayerControlSystem = pc.systems.EntitySystem.extend('PlayerControlSystem',
           h: splashAnim.frameHeight
         }));
         splash.addComponent(pc.components.Expiry.create({lifetime: 5000}));
+        splash.addComponent(NoiseMaker.create({play:'sounds/splash'}));
         return {splash: splash, splashAnim: splashAnim};
       },
 
