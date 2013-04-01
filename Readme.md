@@ -2,8 +2,14 @@
 
 ## Credits
 
+All the graphics are original artwork by [Glenn Martin](http://bunyep.com).
 
-Art by Glenn Martin
+Programming by [Dobes Vandermeer](http://dobesv.com).
+
+Original music by [Christopher Tyler Nickel](http://www.christophernickel.com/)
+
+[Di Wu](http://www.diwugamedesign.com/) helped out with the game design, testing, and
+level design this month.
 
 Sounds:
 
